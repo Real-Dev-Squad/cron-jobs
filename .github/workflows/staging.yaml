@@ -5,9 +5,9 @@ on:
 jobs:
   Deploy-to-Cloudflare:
     runs-on: ubuntu-latest
+    environment: staging
     steps:
       - uses: actions/checkout@v2
-      - run: npm install
       - uses: cloudflare/wrangler-action@2.0.0
         with:
           apiToken: ${{secrets.CLOUDFLARE_API_TOKEN}}
