@@ -8,6 +8,6 @@ jobs:
         steps:
             - uses: actions/checkout@v2
             - run: npm install
-            - run: npm lint-check
+            - run: npm run lint-check
             - run: npm run format-check
             - run: npm test
