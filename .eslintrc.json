@@ -1,6 +1,10 @@
 {
 	"root": true,
 	"parser": "@typescript-eslint/parser",
-	"plugins": ["@typescript-eslint"],
-	"extends": ["eslint:recommended", "plugin:@typescript-eslint/eslint-recommended", "plugin:@typescript-eslint/recommended"]
+	"plugins": ["@typescript-eslint", "simple-import-sort"],
+	"extends": ["eslint:recommended", "plugin:@typescript-eslint/eslint-recommended"],
+	"rules": {
+		"simple-import-sort/imports": "error",
+		"simple-import-sort/exports": "error"
+	}
 }

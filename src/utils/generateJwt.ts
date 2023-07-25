@@ -1,4 +1,5 @@
 import jwt from '@tsndr/cloudflare-worker-jwt';
+
 import { env } from '../types/global.types';
 
 export const generateJwt = async (env: env) => {
