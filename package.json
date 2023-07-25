@@ -6,7 +6,7 @@
     "deploy": "wrangler publish",
     "start": "wrangler dev",
     "test": "echo 'running tests 🧪' && jest --coverage && echo '✅ All tests passed'",
-    "lint-check": "echo 'checking your code for linting issues 🤔' && eslint . && echo '✅ Your code passes lint check'",
+    "lint-check": "echo 'checking your code for linting issues 🤔' && eslint ./src/ && echo '✅ Your code passes lint check'",
     "format-check": "echo 'Checking the formatting of your code 👨‍💻' && prettier --check ./src/ && echo '✅ code matches prettier formatting'",
     "format-fix": "prettier --write ./src/"
   },
