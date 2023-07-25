@@ -1,0 +1,12 @@
+name: Test
+on:
+    pull_request:
+        branches: [main, develop]
+jobs:
+    lint-ckeck-and-test:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - run: npm install
+            - run: npm run lint-check
+            - run: npm run format-check

@@ -1,4 +1,5 @@
 import jwt from '@tsndr/cloudflare-worker-jwt';
+
 import { generateJwt } from '../utils/generateJwt';
 import { privateKey } from './config/keys';
 
