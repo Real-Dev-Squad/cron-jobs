@@ -1,6 +1,8 @@
 name = "cron-jobs"
 main = "src/worker.ts"
 compatibility_date = "2023-07-17"
+[triggers]
+crons = ["0 */4 * * *"]
 
 # # KV Namespace binding - For more information: https://developers.cloudflare.com/workers/runtime-apis/kv
 # [[kv_namespaces]]
