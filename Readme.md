@@ -50,7 +50,8 @@ publicKey: <copied public key>,
 }
 ```
 
-Make sure the public key is formatted as it is in `config/test.js`. 8. Start the backend by running the following command in your terminal:
+Make sure the public key is formatted as it is in `config/test.js`. 
+8. Start the backend by running the following command in your terminal:
 
 ```bash
 yarn dev
