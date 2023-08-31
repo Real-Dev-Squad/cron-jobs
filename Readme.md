@@ -37,11 +37,17 @@ To ensure secure communication between the cron jobs and the backend, every requ
 ## How to Set Up Locally
 
 1. Clone this repository to your local machine.
+
 2. Run `npm install` to install the required dependencies.
+
 3. Run `npm deploy` to deploy the Cloudflare Worker.
+
 4. Generate a pair of RSA 2048-bit keys (private and public).
+
 5. Go to `dash.cloudflare.com`, select "Workers," and find the worker named "Cron Jobs."
+
 6. Go to its settings > variables and add a variable named `CRON_JOB_PRIVATE_KEY`, and paste your private key.
+
 7. Copy and paste the public key in the RDS backend configuration file (`config/local.js`) under `cronJobHandler`:
 
 ```js
@@ -51,6 +57,7 @@ publicKey: <copied public key>,
 ```
 
 Make sure the public key is formatted as it is in `config/test.js`. 
+
 8. Start the backend by running the following command in your terminal:
 
 ```bash
@@ -58,6 +65,7 @@ yarn dev
 ```
 
 9. With the backend running, use ngrok to expose your local server publicly. Install ngrok if you haven't already.
+
 10. Start ngrok with the following command:
 
 ```
@@ -65,7 +73,11 @@ ngrok http <PORT_NUMBER>
 ```
 
 Replace `<PORT_NUMBER>` with the port number your backend is running on (e.g., 3000). 
-11. Ngrok will generate a public URL (e.g., `https://abc123.ngrok.io`) that forwards requests to your local server. Copy this ngrok URL. 12. Paste the ngrok URL in the "else" part of the Cron Jobs project's `src/config.ts` file, inside the `handleConfig` function. 
+
+11. Ngrok will generate a public URL (e.g., `https://abc123.ngrok.io`) that forwards requests to your local server. Copy this ngrok URL. 
+
+12. Paste the ngrok URL in the "else" part of the Cron Jobs project's `src/config.ts` file, inside the `handleConfig` function. 
+
 13. Now set the desired trigger time as mentioned [here](#how-to-set-trigger-time)
 
 Now, your backend will get the call at the set time using the public ngrok URL. Remember to keep the backend running with ngrok to ensure the scheduled cron jobs work as intended.
