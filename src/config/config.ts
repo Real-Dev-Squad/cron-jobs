@@ -9,7 +9,7 @@ export const handleConfig = (env: env) => {
 			baseUrl = 'https://staging-api.realdevsquad.com';
 		}
 	} else {
-		baseUrl = 'https://staging-api.realdevsquad.com';
+		baseUrl = 'https://93f5-49-204-135-151.ngrok.io';
 	}
 	return { baseUrl };
 };

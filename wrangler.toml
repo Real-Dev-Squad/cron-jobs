@@ -1,13 +1,19 @@
 name = "cron-jobs"
 main = "src/worker.ts"
 compatibility_date = "2023-07-17"
-[triggers]
-crons = ["0 */4 * * *"]
 
-# # KV Namespace binding - For more information: https://developers.cloudflare.com/workers/runtime-apis/kv
-# [[kv_namespaces]]
-# binding = "MY_KV_NAMESPACE"
-# id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+kv_namespaces = [
+  { binding = "CRON_JOBS_TIMESTAMPS", id = "a5431887e6c94dc9b3e36c35a07081b9" }
+]
+
+# [env.production]
+# the BINDING_NAME must be CRON_JOBS_TIMESTAMPS to override in the production env
+# kv_namespaces = [
+#  { binding = "<BINDING_NAME>", id = "<BINDING_ID>" }
+# ]
+
+[triggers]
+crons = ["0 */4 * * *", "0 */6 * * *"]
 
 # # Durable Object binding - For more information: https://developers.cloudflare.com/workers/runtime-apis/durable-objects
 # [[durable_objects]]
