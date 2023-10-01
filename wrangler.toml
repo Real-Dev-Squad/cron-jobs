@@ -6,6 +6,12 @@ kv_namespaces = [
   { binding = "CRON_JOBS_TIMESTAMPS", id = "a5431887e6c94dc9b3e36c35a07081b9" }
 ]
 
+# [env.staging]
+# the BINDING_NAME must be CRON_JOBS_TIMESTAMPS to override in the staging env
+# kv_namespaces = [
+#  { binding = "<BINDING_NAME>", id = "<BINDING_ID>" }
+# ]
+
 # [env.production]
 # the BINDING_NAME must be CRON_JOBS_TIMESTAMPS to override in the production env
 # kv_namespaces = [
