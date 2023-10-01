@@ -13,9 +13,12 @@ export async function ping(env: env) {
 
 export async function callDiscordNicknameBatchUpdate(env: env) {
 	const namespace = env[NAMESPACE_NAME] as unknown as KVNamespace;
-	let lastNicknameUpdate: string | number = 0;
+	let lastNicknameUpdate: string | number | null = 0;
 	try {
-		lastNicknameUpdate = (await namespace.get(DISCORD_NICKNAME_CHANGED_TIMESTAMP)) ?? 0;
+		lastNicknameUpdate = await namespace.get(DISCORD_NICKNAME_CHANGED_TIMESTAMP);
+		if (lastNicknameUpdate === null) {
+			throw new Error('Error while fetching KV "DISCORD_NICKNAME_CHANGED_TIMESTAMP"');
+		}
 	} catch (err) {
 		console.log('Error while fetching the timestamp for last nickname update');
 		throw err;
