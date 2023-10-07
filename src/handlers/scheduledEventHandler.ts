@@ -1,7 +1,7 @@
 import { KVNamespace } from '@cloudflare/workers-types';
 
 import { handleConfig } from '../config/config';
-import { DISCORD_NICKNAME_CHANGED_TIMESTAMP, NAMESPACE_NAME } from '../constants';
+import { NAMESPACE_NAME } from '../constants';
 import { env, nicknameUpdateResponseType } from '../types/global.types';
 import { generateJwt } from '../utils/generateJwt';
 
@@ -15,9 +15,9 @@ export async function callDiscordNicknameBatchUpdate(env: env) {
 	const namespace = env[NAMESPACE_NAME] as unknown as KVNamespace;
 	let lastNicknameUpdate: string | number | null = 0;
 	try {
-		lastNicknameUpdate = await namespace.get(DISCORD_NICKNAME_CHANGED_TIMESTAMP);
+		lastNicknameUpdate = await namespace.get('DISCORD_NICKNAME_CHANGED');
 		if (lastNicknameUpdate === null) {
-			throw new Error('Error while fetching KV "DISCORD_NICKNAME_CHANGED_TIMESTAMP"');
+			throw new Error('Error while fetching KV "DISCORD_NICKNAME_CHANGED" timestamp');
 		}
 	} catch (err) {
 		console.log('Error while fetching the timestamp for last nickname update');
@@ -51,7 +51,7 @@ export async function callDiscordNicknameBatchUpdate(env: env) {
 		throw new Error("Error while trying to update users' discord nickname");
 	}
 	try {
-		await namespace.put(DISCORD_NICKNAME_CHANGED_TIMESTAMP, Date.now().toString());
+		await namespace.put('DISCORD_NICKNAME_CHANGED', Date.now().toString());
 	} catch (err) {
 		console.log('Error while trying to update the last nickname change timestamp');
 	}
