@@ -20,7 +20,7 @@ export async function callDiscordNicknameBatchUpdate(env: env) {
 			throw new Error('Error while fetching KV "DISCORD_NICKNAME_CHANGED" timestamp');
 		}
 	} catch (err) {
-		console.log('Error while fetching the timestamp for last nickname update');
+		console.error(err, 'Error while fetching the timestamp for last nickname update');
 		throw err;
 	}
 
@@ -29,7 +29,7 @@ export async function callDiscordNicknameBatchUpdate(env: env) {
 	try {
 		token = await generateJwt(env);
 	} catch (err) {
-		console.log(`Error while generating JWT token: ${err}`);
+		console.error(`Error while generating JWT token: ${err}`);
 		throw err;
 	}
 	const response = await fetch(`${url.baseUrl}/discord-actions/nickname/status`, {
@@ -53,7 +53,7 @@ export async function callDiscordNicknameBatchUpdate(env: env) {
 	try {
 		await namespace.put('DISCORD_NICKNAME_CHANGED', Date.now().toString());
 	} catch (err) {
-		console.log('Error while trying to update the last nickname change timestamp');
+		console.error('Error while trying to update the last nickname change timestamp');
 	}
 
 	return data;

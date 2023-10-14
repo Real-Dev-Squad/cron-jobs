@@ -13,7 +13,7 @@ export default {
 			case '0 */6 * * *':
 				return await callDiscordNicknameBatchUpdate(env);
 			default:
-				console.log('Unknown Trigger Value!');
+				console.error('Unknown Trigger Value!');
 		}
 	},
 	// We need to keep all 3 parameters in this format even if they are not used as as cloudflare workers need them to be present So we are disabling eslint rule of no-unused-vars
