@@ -1,3 +1,3 @@
-const NAMESPACE_NAME = 'CRON_JOBS_TIMESTAMPS';
+const NAMESPACE_NAME = 'CronJobsTimestamp';
 
 export { NAMESPACE_NAME };
