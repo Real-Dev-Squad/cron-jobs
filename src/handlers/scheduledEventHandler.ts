@@ -2,7 +2,7 @@ import { KVNamespace } from '@cloudflare/workers-types';
 
 import { handleConfig } from '../config/config';
 import { NAMESPACE_NAME } from '../constants';
-import { env, nicknameUpdateResponseType } from '../types/global.types';
+import { env, NicknameUpdateResponseType } from '../types/global.types';
 import { generateJwt } from '../utils/generateJwt';
 
 export async function ping(env: env) {
@@ -46,7 +46,7 @@ export async function callDiscordNicknameBatchUpdate(env: env) {
 		throw new Error("Error while trying to update users' discord nickname");
 	}
 
-	const data: nicknameUpdateResponseType = await response.json();
+	const data: NicknameUpdateResponseType = await response.json();
 	if (data?.data.totalUsersStatus !== 0 && data?.data.successfulNicknameUpdates === 0) {
 		throw new Error("Error while trying to update users' discord nickname");
 	}

@@ -2,7 +2,7 @@ export type env = {
 	[key: string]: string;
 };
 
-export type nicknameUpdateResponseType = {
+export type NicknameUpdateResponseType = {
 	message: string;
 	data: {
 		totalUsersStatus: number;
