@@ -13,7 +13,7 @@ export async function ping(env: env) {
 
 export async function callDiscordNicknameBatchUpdate(env: env) {
 	const namespace = env[NAMESPACE_NAME] as unknown as KVNamespace;
-	let lastNicknameUpdate: string | number | null = 0;
+	let lastNicknameUpdate: string | null = '0';
 	try {
 		lastNicknameUpdate = await namespace.get('DISCORD_NICKNAME_CHANGED');
 		if (lastNicknameUpdate === null) {
