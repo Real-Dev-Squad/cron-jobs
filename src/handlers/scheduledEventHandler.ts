@@ -19,6 +19,9 @@ export async function callDiscordNicknameBatchUpdate(env: env) {
 		if (lastNicknameUpdate === null) {
 			throw new Error('Error while fetching KV "DISCORD_NICKNAME_CHANGED" timestamp');
 		}
+		if (!lastNicknameUpdate) {
+			lastNicknameUpdate = '0';
+		}
 	} catch (err) {
 		console.error(err, 'Error while fetching the timestamp for last nickname update');
 		throw err;
