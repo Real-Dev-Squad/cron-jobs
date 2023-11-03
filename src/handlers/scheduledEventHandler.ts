@@ -15,9 +15,9 @@ export async function callDiscordNicknameBatchUpdate(env: env) {
 	const namespace = env[NAMESPACE_NAME] as unknown as KVNamespace;
 	let lastNicknameUpdate: string | null = '0';
 	try {
-		lastNicknameUpdate = await namespace.get('DISCORD_NICKNAME_CHANGED');
+		lastNicknameUpdate = await namespace.get('DISCORD_NICKNAME_UPDATED_TIME');
 		if (lastNicknameUpdate === null) {
-			throw new Error('Error while fetching KV "DISCORD_NICKNAME_CHANGED" timestamp');
+			throw new Error('Error while fetching KV "DISCORD_NICKNAME_UPDATED_TIME" timestamp');
 		}
 		if (!lastNicknameUpdate) {
 			lastNicknameUpdate = '0';
@@ -57,7 +57,7 @@ export async function callDiscordNicknameBatchUpdate(env: env) {
 	console.log(data);
 
 	try {
-		await namespace.put('DISCORD_NICKNAME_CHANGED', Date.now().toString());
+		await namespace.put('DISCORD_NICKNAME_UPDATED_TIME', Date.now().toString());
 	} catch (err) {
 		console.error('Error while trying to update the last nickname change timestamp');
 	}
