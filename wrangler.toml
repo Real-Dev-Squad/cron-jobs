@@ -12,11 +12,10 @@ kv_namespaces = [
 #  { binding = "<BINDING_NAME>", id = "<BINDING_ID>" }
 # ]
 
-# [env.production]
-# the BINDING_NAME must be CronJobsTimestamp to override in the production env
-# kv_namespaces = [
-#  { binding = "<BINDING_NAME>", id = "<BINDING_ID>" }
-# ]
+[env.production]
+kv_namespaces = [
+	{ binding = "CronJobsTimestamp", id = "3a10f726c95d4afea9dee5fd00f029b9" }
+]
 
 [triggers]
 crons = ["0 */4 * * *", "0 */6 * * *"]
