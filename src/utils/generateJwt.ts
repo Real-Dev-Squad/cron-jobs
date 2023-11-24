@@ -10,7 +10,7 @@ export const generateJwt = async (env: env) => {
 				exp: Math.floor(Date.now() / 1000) + 2,
 			},
 			env.CRON_JOB_PRIVATE_KEY,
-			{ algorithm: 'RS256' }
+			{ algorithm: 'RS256' },
 		);
 
 		return authToken;
