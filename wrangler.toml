@@ -2,15 +2,12 @@ name = "cron-jobs"
 main = "src/worker.ts"
 compatibility_date = "2023-07-17"
 
-kv_namespaces = [
-  { binding = "CronJobsTimestamp", id = "7dcf94601bec415db4b13d5d1faf0fc3" }
-]
 
-# [env.staging]
-# the BINDING_NAME must be CronJobsTimestamp to override in the staging env
-# kv_namespaces = [
-#  { binding = "<BINDING_NAME>", id = "<BINDING_ID>" }
-# ]
+
+[env.staging]
+kv_namespaces = [
+  { binding = "CronJobsTimestamp", id = "509cd24483a24ddcb79f85f657274508" }
+]
 
 [env.production]
 kv_namespaces = [
