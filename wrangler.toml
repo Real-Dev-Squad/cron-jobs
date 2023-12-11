@@ -2,23 +2,25 @@ name = "cron-jobs"
 main = "src/worker.ts"
 compatibility_date = "2023-07-17"
 
-kv_namespaces = [
-  { binding = "CronJobsTimestamp", id = "7dcf94601bec415db4b13d5d1faf0fc3" }
-]
 
-# [env.staging]
-# the BINDING_NAME must be CronJobsTimestamp to override in the staging env
-# kv_namespaces = [
-#  { binding = "<BINDING_NAME>", id = "<BINDING_ID>" }
-# ]
+[env.staging]
+kv_namespaces = [
+  { binding = "CronJobsTimestamp", id = "509cd24483a24ddcb79f85f657274508" }
+]
+services = [
+  { binding = "DISCORD_BOT", service = "discord-slash-commands", environment = "staging" }
+]
 
 [env.production]
 kv_namespaces = [
 	{ binding = "CronJobsTimestamp", id = "3a10f726c95d4afea9dee5fd00f029b9" }
 ]
+services = [
+  { binding = "DISCORD_BOT", service = "discord-slash-commands", environment = "production" }
+]
 
 [triggers]
-crons = ["0 */4 * * *", "0 */6 * * *"]
+crons = ["0 */4 * * *", "0 */6 * * *","0 */12 * * *" ]
 
 # # Durable Object binding - For more information: https://developers.cloudflare.com/workers/runtime-apis/durable-objects
 # [[durable_objects]]
