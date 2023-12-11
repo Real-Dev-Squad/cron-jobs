@@ -1,8 +1,9 @@
-import { callDiscordNicknameBatchUpdate, ping } from './handlers/scheduledEventHandler';
+import { addMissedUpdatesRole, callDiscordNicknameBatchUpdate, ping } from './handlers/scheduledEventHandler';
 import { env } from './types/global.types';
 
 const EVERY_4_HOURS = '0 */4 * * *';
 const EVERY_6_HOURS = '0 */6 * * *';
+const EVERY_12_HOURS = '0 */12 * * *';
 
 export default {
 	async scheduled(req: ScheduledController, env: env, ctx: ExecutionContext) {
@@ -12,6 +13,9 @@ export default {
 				break;
 			case EVERY_6_HOURS:
 				return await callDiscordNicknameBatchUpdate(env);
+			case EVERY_12_HOURS: {
+				return await addMissedUpdatesRole(env);
+			}
 			default:
 				console.error('Unknown Trigger Value!');
 		}

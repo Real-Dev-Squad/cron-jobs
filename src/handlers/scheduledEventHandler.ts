@@ -1,13 +1,16 @@
 import { KVNamespace } from '@cloudflare/workers-types';
 
-import { handleConfig } from '../config/config';
+import config from '../config/config';
 import { NAMESPACE_NAME } from '../constants';
-import { env, NicknameUpdateResponseType } from '../types/global.types';
+import { updateUserRoles } from '../services/discordBotServices';
+import { getMissedUpdatesUsers } from '../services/rdsBackendService';
+import { DiscordUserRole, env, NicknameUpdateResponseType } from '../types/global.types';
+import { chunks } from '../utils/arrayUtils';
 import { generateJwt } from '../utils/generateJwt';
 
 export async function ping(env: env) {
-	const url = handleConfig(env);
-	const response = await fetch(`${url.baseUrl}/healthcheck`);
+	const url = config(env).RDS_BASE_API_URL;
+	const response = await fetch(`${url}/healthcheck`);
 	return response;
 }
 
@@ -27,7 +30,7 @@ export async function callDiscordNicknameBatchUpdate(env: env) {
 		throw err;
 	}
 
-	const url = handleConfig(env);
+	const url = config(env).RDS_BASE_API_URL;
 	let token;
 	try {
 		token = await generateJwt(env);
@@ -35,7 +38,7 @@ export async function callDiscordNicknameBatchUpdate(env: env) {
 		console.error(`Error while generating JWT token: ${err}`);
 		throw err;
 	}
-	const response = await fetch(`${url.baseUrl}/discord-actions/nickname/status`, {
+	const response = await fetch(`${url}/discord-actions/nickname/status`, {
 		method: 'POST',
 		headers: {
 			Authorization: `Bearer ${token}`,
@@ -54,8 +57,6 @@ export async function callDiscordNicknameBatchUpdate(env: env) {
 		throw new Error("Error while trying to update users' discord nickname");
 	}
 
-	console.log(data);
-
 	try {
 		await namespace.put('DISCORD_NICKNAME_UPDATED_TIME', Date.now().toString());
 	} catch (err) {
@@ -64,3 +65,34 @@ export async function callDiscordNicknameBatchUpdate(env: env) {
 
 	return data;
 }
+
+export const addMissedUpdatesRole = async (env: env) => {
+	const MAX_ROLE_UPDATE = 25;
+	try {
+		let cursor: boolean | string = true;
+		let index = 25;
+		while (!!cursor && index > 0) {
+			const missedUpdatesUsers = await getMissedUpdatesUsers(env);
+
+			if (!!missedUpdatesUsers && missedUpdatesUsers.usersToAddRole?.length > 1) {
+				const discordUserIdRoleIdList: DiscordUserRole[] = missedUpdatesUsers.usersToAddRole.map((userId) => ({
+					userid: userId,
+					roleid: config(env).MISSED_UPDATES_ROLE_ID,
+				}));
+
+				const discordUserRoleChunks = chunks(discordUserIdRoleIdList, MAX_ROLE_UPDATE);
+				for (const discordUserRoleList of discordUserRoleChunks) {
+					try {
+						await updateUserRoles(env, discordUserRoleList);
+					} catch (error) {
+						console.error('Error occurred while updating discord users', error);
+					}
+				}
+			}
+			cursor = missedUpdatesUsers?.cursor;
+			index--;
+		}
+	} catch (err) {
+		console.error('Error while adding missed updates roles');
+	}
+};
