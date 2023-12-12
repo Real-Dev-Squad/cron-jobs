@@ -53,8 +53,12 @@ export async function callDiscordNicknameBatchUpdate(env: env) {
 	}
 
 	const data: NicknameUpdateResponseType = await response.json();
-	if (data?.data.totalUsersStatus !== 0 && data?.data.successfulNicknameUpdates === 0) {
-		throw new Error("Error while trying to update users' discord nickname");
+	if (data?.data.unsuccessfulNicknameUpdates === 0) {
+		try {
+			await namespace.put('DISCORD_NICKNAME_UPDATED_TIME', Date.now().toString());
+		} catch (err) {
+			console.error('Error while trying to update the last nickname change timestamp');
+		}
 	}
 
 	try {
