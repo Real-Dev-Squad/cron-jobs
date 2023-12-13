@@ -60,13 +60,6 @@ export async function callDiscordNicknameBatchUpdate(env: env) {
 			console.error('Error while trying to update the last nickname change timestamp');
 		}
 	}
-
-	try {
-		await namespace.put('DISCORD_NICKNAME_UPDATED_TIME', Date.now().toString());
-	} catch (err) {
-		console.error('Error while trying to update the last nickname change timestamp');
-	}
-
 	return data;
 }
 
