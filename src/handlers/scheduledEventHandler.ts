@@ -1,13 +1,13 @@
 import { KVNamespace } from '@cloudflare/workers-types';
 
-import { handleConfig } from '../config/config';
+import config from '../config/config';
 import { NAMESPACE_NAME } from '../constants';
 import { env, NicknameUpdateResponseType } from '../types/global.types';
 import { generateJwt } from '../utils/generateJwt';
 
 export async function ping(env: env) {
-	const url = handleConfig(env);
-	const response = await fetch(`${url.baseUrl}/healthcheck`);
+	const url = config(env).RDS_BASE_API_URL;
+	const response = await fetch(`${url}/healthcheck`);
 	return response;
 }
 
@@ -27,7 +27,7 @@ export async function callDiscordNicknameBatchUpdate(env: env) {
 		throw err;
 	}
 
-	const url = handleConfig(env);
+	const url = config(env).RDS_BASE_API_URL;
 	let token;
 	try {
 		token = await generateJwt(env);
@@ -35,7 +35,7 @@ export async function callDiscordNicknameBatchUpdate(env: env) {
 		console.error(`Error while generating JWT token: ${err}`);
 		throw err;
 	}
-	const response = await fetch(`${url.baseUrl}/discord-actions/nickname/status`, {
+	const response = await fetch(`${url}/discord-actions/nickname/status`, {
 		method: 'POST',
 		headers: {
 			Authorization: `Bearer ${token}`,
