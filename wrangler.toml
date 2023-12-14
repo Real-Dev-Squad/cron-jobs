@@ -5,7 +5,7 @@ compatibility_date = "2023-07-17"
 
 [env.staging]
 kv_namespaces = [
-  { binding = "CronJobsTimestamp", id = "509cd24483a24ddcb79f85f657274508" }
+  { binding = "CronJobsTimestamp", id = "6fbc191da931473393d5fbe612251d29" }
 ]
 services = [
   { binding = "DISCORD_BOT", service = "discord-slash-commands", environment = "staging" }
