@@ -1,5 +1,5 @@
 import config from '../config/config';
-import { DiscordUserIdList, env } from '../types/global.types';
+import { DiscordUsersResponse, env } from '../types/global.types';
 import { generateJwt } from '../utils/generateJwt';
 
 export const getMissedUpdatesUsers = async (env: env, cursor: string | undefined) => {
@@ -23,8 +23,8 @@ export const getMissedUpdatesUsers = async (env: env, cursor: string | undefined
 			throw new Error(`Fetch call to get user discord details failed with status: ${response.status}`);
 		}
 
-		const data: DiscordUserIdList = await response.json();
-		return data;
+		const responseData: DiscordUsersResponse = await response.json();
+		return responseData?.data;
 	} catch (error) {
 		console.error('Error occurrent while fetching discord user details');
 		throw error;

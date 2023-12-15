@@ -1,3 +1,7 @@
+export const missedUpdatesUsersResponse = {
+	message: 'Discord details of users with status missed updates fetched successfully',
+	data: {},
+};
 export const missedUpdatesUsersMock = {
 	usersToAddRole: ['user1', 'user2'],
 	tasks: 10,

@@ -1,6 +1,6 @@
 import config from '../../config/config';
 import { getMissedUpdatesUsers } from '../../services/rdsBackendService';
-import { missedUpdatesUsersMock } from '../fixtures/missedRoleHandler';
+import { missedUpdatesUsersMock, missedUpdatesUsersResponse } from '../fixtures/missedRoleHandler';
 
 jest.mock('../../utils/generateJwt', () => ({
 	generateJwt: jest.fn().mockResolvedValue('mocked-jwt-token'),
@@ -9,7 +9,6 @@ jest.mock('../../utils/generateJwt', () => ({
 describe('rdsBackendService', () => {
 	describe('updateUserRoles', () => {
 		let cursor: undefined | string;
-
 		beforeEach(() => {
 			jest.clearAllMocks();
 		});
@@ -18,7 +17,7 @@ describe('rdsBackendService', () => {
 			jest.spyOn(global, 'fetch').mockResolvedValueOnce({
 				ok: true,
 				status: 200,
-				json: jest.fn().mockResolvedValueOnce(missedUpdatesUsersMock),
+				json: jest.fn().mockResolvedValueOnce({ ...missedUpdatesUsersResponse, data: missedUpdatesUsersMock }),
 			} as unknown as Response);
 			const result = await getMissedUpdatesUsers({}, cursor);
 			const url = new URL(`${config({}).RDS_BASE_API_URL}/tasks/users/discord`);
@@ -36,7 +35,7 @@ describe('rdsBackendService', () => {
 			jest.spyOn(global, 'fetch').mockResolvedValueOnce({
 				ok: true,
 				status: 200,
-				json: jest.fn().mockResolvedValueOnce(missedUpdatesUsersMock),
+				json: jest.fn().mockResolvedValueOnce({ ...missedUpdatesUsersResponse, data: missedUpdatesUsersMock }),
 			} as unknown as Response);
 			const result = await getMissedUpdatesUsers({}, 'cursorValue');
 			const url = new URL(`${config({}).RDS_BASE_API_URL}/tasks/users/discord`);
