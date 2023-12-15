@@ -19,7 +19,10 @@ export type NicknameUpdateResponseType = {
 		unsuccessfulNicknameUpdates: number;
 	};
 };
-
+export type DiscordUsersResponse = {
+	message: string;
+	data: DiscordUserIdList;
+};
 export type DiscordUserIdList = {
 	usersToAddRole: string[];
 	tasks: number;
