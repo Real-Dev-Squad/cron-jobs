@@ -7,17 +7,22 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: npm install
-      - uses: cloudflare/wrangler-action@2.0.0
+      - uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{secrets.CLOUDFLARE_API_TOKEN}}
           accountId: ${{secrets.CLOUDFLARE_ACCOUNT_ID}}
+          command: deploy --env=${{ vars.CURRENT_ENVIRONMENT }}
           secrets: |
-            CRON_JOB_PRIVATE_KEY
             CURRENT_ENVIRONMENT
+            CRON_JOB_PRIVATE_KEY
+            DISCORD_BOT_PRIVATE_KEY
+            DISCORD_BOT_API_URL
         env:
-          CURRENT_ENVIRONMENT: production
-          CRON_JOB_PRIVATE_KEY: ${{secrets.CRON_JOB_PRIVATE_KEY}}
           CLOUDFLARE_API_TOKEN: ${{secrets.CLOUDFLARE_API_TOKEN}}
           CLOUDFLARE_ACCOUNT_ID: ${{secrets.CLOUDFLARE_ACCOUNT_ID}}
+          CURRENT_ENVIRONMENT: ${{vars.CURRENT_ENVIRONMENT}}
+          CRON_JOB_PRIVATE_KEY: ${{secrets.CRON_JOB_PRIVATE_KEY}}
+          DISCORD_BOT_PRIVATE_KEY: ${{secrets.DISCORD_BOT_PRIVATE_KEY}}
+          DISCORD_BOT_API_URL: ${{secrets.DISCORD_BOT_API_URL}}
