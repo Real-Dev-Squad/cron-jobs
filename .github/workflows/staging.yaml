@@ -1,11 +1,11 @@
-name: Deploy to staging
+name: Deploy to ${{ vars.CURRENT_ENVIRONMENT }}
 on:
   push:
     branches: develop
 jobs:
   Deploy-to-Cloudflare:
     runs-on: ubuntu-latest
-    environment: staging
+    environment: ${{ vars.CURRENT_ENVIRONMENT }}
     steps:
       - uses: actions/checkout@v3
       - run: npm install
@@ -13,7 +13,7 @@ jobs:
         with:
           apiToken: ${{secrets.CLOUDFLARE_API_TOKEN}}
           accountId: ${{secrets.CLOUDFLARE_ACCOUNT_ID}}
-          environment: staging
+          environment: ${{ vars.CURRENT_ENVIRONMENT }}
           command: deploy --env ${{ vars.CURRENT_ENVIRONMENT }}
           secrets: |
             CURRENT_ENVIRONMENT
