@@ -13,7 +13,8 @@ jobs:
         with:
           apiToken: ${{secrets.CLOUDFLARE_API_TOKEN}}
           accountId: ${{secrets.CLOUDFLARE_ACCOUNT_ID}}
-          command: deploy --env=${{ vars.CURRENT_ENVIRONMENT }}
+          environment: ${{ vars.CURRENT_ENVIRONMENT }}
+          command: deploy --env ${{ vars.CURRENT_ENVIRONMENT }}
           secrets: |
             CURRENT_ENVIRONMENT
             CRON_JOB_PRIVATE_KEY
