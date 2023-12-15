@@ -15,7 +15,7 @@ services = [
 
 [env.production]
 kv_namespaces = [
-	{ binding = "CronJobsTimestamp", id = "3a10f726c95d4afea9dee5fd00f029b9" }
+	{ binding = "CronJobsTimestamp", id = "6fbc191da931473393d5fbe612251d29" }
 ]
 services = [
   { binding = "DISCORD_BOT", service = "discord-slash-commands" }
