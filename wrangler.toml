@@ -10,7 +10,7 @@ kv_namespaces = [
   { binding = "CronJobsTimestamp", id = "6fbc191da931473393d5fbe612251d29" }
 ]
 services = [
-  { binding = "DISCORD_BOT", service = "discord-slash-commands", environment = "staging" }
+  { binding = "DISCORD_BOT", service = "discord-slash-commands", environment = "production" }
 ]
 
 [env.production]
