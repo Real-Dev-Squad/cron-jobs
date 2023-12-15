@@ -2,11 +2,17 @@ import config from '../config/config';
 import { DiscordUserIdList, env } from '../types/global.types';
 import { generateJwt } from '../utils/generateJwt';
 
-export const getMissedUpdatesUsers = async (env: env) => {
+export const getMissedUpdatesUsers = async (env: env, cursor: string | undefined) => {
 	try {
-		const url = config(env).RDS_BASE_API_URL;
+		const baseUrl = config(env).RDS_BASE_API_URL;
+
+		const url = new URL(`${baseUrl}/tasks/users/discord`);
+		url.searchParams.append('q', 'status:missed-updates');
+		if (cursor) {
+			url.searchParams.append('cursor', cursor);
+		}
 		const token = await generateJwt(env);
-		const response = await fetch(`${url}/tasks/users/discord?q=status:missed-updates`, {
+		const response = await fetch(url, {
 			method: 'GET',
 			headers: {
 				Authorization: `Bearer ${token}`,

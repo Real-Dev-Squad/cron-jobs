@@ -66,10 +66,11 @@ export async function callDiscordNicknameBatchUpdate(env: env) {
 export const addMissedUpdatesRole = async (env: env) => {
 	const MAX_ROLE_UPDATE = 25;
 	try {
-		let cursor: boolean | string = true;
-		let index = 25;
-		while (!!cursor && index > 0) {
-			const missedUpdatesUsers = await getMissedUpdatesUsers(env);
+		let cursor: string | undefined = undefined;
+		for (let index = MAX_ROLE_UPDATE; index > 0; index--) {
+			if (index < MAX_ROLE_UPDATE && !cursor) break;
+
+			const missedUpdatesUsers = await getMissedUpdatesUsers(env, cursor);
 
 			if (!!missedUpdatesUsers && missedUpdatesUsers.usersToAddRole?.length > 1) {
 				const discordUserIdRoleIdList: DiscordUserRole[] = missedUpdatesUsers.usersToAddRole.map((userId) => ({
@@ -87,7 +88,6 @@ export const addMissedUpdatesRole = async (env: env) => {
 				}
 			}
 			cursor = missedUpdatesUsers?.cursor;
-			index--;
 		}
 	} catch (err) {
 		console.error('Error while adding missed updates roles');
