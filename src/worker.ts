@@ -1,18 +1,16 @@
-import { addMissedUpdatesRole, callDiscordNicknameBatchUpdate, ping } from './handlers/scheduledEventHandler';
+import { addMissedUpdatesRole, callDiscordNicknameBatchUpdate } from './handlers/scheduledEventHandler';
 import { env } from './types/global.types';
 
-const EVERY_4_HOURS = '0 */4 * * *';
 const EVERY_6_HOURS = '0 */6 * * *';
 const EVERY_12_HOURS = '0 */12 * * *';
 
 export default {
+	// eslint-disable-next-line no-unused-vars
 	async scheduled(req: ScheduledController, env: env, ctx: ExecutionContext) {
 		switch (req.cron) {
-			case EVERY_4_HOURS:
-				ctx.waitUntil(ping(env));
-				break;
-			case EVERY_6_HOURS:
+			case EVERY_6_HOURS: {
 				return await callDiscordNicknameBatchUpdate(env);
+			}
 			case EVERY_12_HOURS: {
 				return await addMissedUpdatesRole(env);
 			}
