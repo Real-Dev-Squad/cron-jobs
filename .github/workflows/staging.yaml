@@ -7,13 +7,14 @@ jobs:
     runs-on: ubuntu-latest
     environment: staging
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: npm install
       - uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{secrets.CLOUDFLARE_API_TOKEN}}
           accountId: ${{secrets.CLOUDFLARE_ACCOUNT_ID}}
-          command: deploy --env=${{ vars.CURRENT_ENVIRONMENT }}
+          environment: ${{ vars.CURRENT_ENVIRONMENT }}
+          command: deploy --env ${{ vars.CURRENT_ENVIRONMENT }}
           secrets: |
             CURRENT_ENVIRONMENT
             CRON_JOB_PRIVATE_KEY
@@ -26,5 +27,3 @@ jobs:
           CRON_JOB_PRIVATE_KEY: ${{secrets.CRON_JOB_PRIVATE_KEY}}
           DISCORD_BOT_PRIVATE_KEY: ${{secrets.DISCORD_BOT_PRIVATE_KEY}}
           DISCORD_BOT_API_URL: ${{secrets.DISCORD_BOT_API_URL}}
-          
-    
