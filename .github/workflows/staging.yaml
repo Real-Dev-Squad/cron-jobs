@@ -5,7 +5,7 @@ on:
 jobs:
   Deploy-to-Cloudflare:
     runs-on: ubuntu-latest
-    environment: ${{ vars.CURRENT_ENVIRONMENT }}
+    environment: staging
     steps:
       - uses: actions/checkout@v3
       - run: npm install
