@@ -5,9 +5,9 @@ on:
 jobs:
   Deploy-to-Cloudflare:
     runs-on: ubuntu-latest
-    environment: staging
+    environment: production
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: npm install
       - uses: cloudflare/wrangler-action@v3
         with:
@@ -26,5 +26,3 @@ jobs:
           CRON_JOB_PRIVATE_KEY: ${{secrets.CRON_JOB_PRIVATE_KEY}}
           DISCORD_BOT_PRIVATE_KEY: ${{secrets.DISCORD_BOT_PRIVATE_KEY}}
           DISCORD_BOT_API_URL: ${{secrets.DISCORD_BOT_API_URL}}
-          
-    
