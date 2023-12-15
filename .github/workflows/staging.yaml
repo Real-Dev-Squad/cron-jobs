@@ -1,4 +1,4 @@
-name: Deploy to ${{ vars.CURRENT_ENVIRONMENT }}
+name: Deploy to staging
 on:
   push:
     branches: develop
