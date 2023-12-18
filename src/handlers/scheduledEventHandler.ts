@@ -89,6 +89,7 @@ export const addMissedUpdatesRole = async (env: env) => {
 			}
 			cursor = missedUpdatesUsers?.cursor;
 		}
+		// add logs for the results https://github.com/Real-Dev-Squad/website-backend/issues/1784
 	} catch (err) {
 		console.error('Error while adding missed updates roles');
 	}
