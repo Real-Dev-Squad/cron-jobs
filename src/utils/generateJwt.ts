@@ -7,7 +7,7 @@ export const generateJwt = async (env: env) => {
 		const authToken = await jwt.sign(
 			{
 				name: 'Cron Job Handler',
-				exp: Math.floor(Date.now() / 1000) + 2,
+				exp: Math.floor(Date.now() / 1000) + 60,
 			},
 			env.CRON_JOB_PRIVATE_KEY,
 			{ algorithm: 'RS256' },
@@ -23,7 +23,7 @@ export const generateDiscordBotJwt = async (env: env) => {
 	try {
 		const authToken = await jwt.sign(
 			{
-				exp: Math.floor(Date.now() / 1000) + 2,
+				exp: Math.floor(Date.now() / 1000) + 60,
 			},
 			env.DISCORD_BOT_PRIVATE_KEY,
 			{ algorithm: 'RS256' },

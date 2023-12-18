@@ -26,7 +26,7 @@ export const getMissedUpdatesUsers = async (env: env, cursor: string | undefined
 		const responseData: DiscordUsersResponse = await response.json();
 		return responseData?.data;
 	} catch (error) {
-		console.error('Error occurrent while fetching discord user details');
+		console.error('Error occurred while fetching discord user details');
 		throw error;
 	}
 };

@@ -62,7 +62,7 @@ describe('rdsBackendService', () => {
 			const consoleSpy = jest.spyOn(console, 'error');
 			jest.spyOn(global, 'fetch').mockRejectedValueOnce(new Error('Error occurred'));
 			await expect(getMissedUpdatesUsers({}, cursor)).rejects.toThrow('Error occurred');
-			expect(consoleSpy).toHaveBeenCalledWith('Error occurrent while fetching discord user details');
+			expect(consoleSpy).toHaveBeenCalledWith('Error occurred while fetching discord user details');
 		});
 	});
 });
