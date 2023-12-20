@@ -1,13 +1,28 @@
 name = "cron-jobs"
 main = "src/worker.ts"
 compatibility_date = "2023-07-17"
-[triggers]
-crons = ["0 */4 * * *"]
 
-# # KV Namespace binding - For more information: https://developers.cloudflare.com/workers/runtime-apis/kv
-# [[kv_namespaces]]
-# binding = "MY_KV_NAMESPACE"
-# id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+kv_namespaces = [
+  { binding = "CronJobsTimestamp", id = "1234" }
+]
+[env.staging]
+kv_namespaces = [
+  { binding = "CronJobsTimestamp", id = "6fbc191da931473393d5fbe612251d29" }
+]
+services = [
+  { binding = "DISCORD_BOT", service = "discord-slash-commands" }
+]
+
+[env.production]
+kv_namespaces = [
+	{ binding = "CronJobsTimestamp", id = "3a10f726c95d4afea9dee5fd00f029b9" }
+]
+services = [
+  { binding = "DISCORD_BOT", service = "discord-slash-commands" }
+]
+
+[triggers]
+crons = ["0 */6 * * *","0 */11 * * *" ]
 
 # # Durable Object binding - For more information: https://developers.cloudflare.com/workers/runtime-apis/durable-objects
 # [[durable_objects]]
