@@ -7,7 +7,7 @@ export const getMissedUpdatesUsers = async (env: env, cursor: string | undefined
 		const baseUrl = config(env).RDS_BASE_API_URL;
 
 		const url = new URL(`${baseUrl}/tasks/users/discord`);
-		url.searchParams.append('q', 'status:missed-updates');
+		url.searchParams.append('q', 'status:missed-updates -days-count:3');
 		if (cursor) {
 			url.searchParams.append('cursor', cursor);
 		}
