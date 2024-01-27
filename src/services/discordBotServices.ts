@@ -6,8 +6,8 @@ export const updateUserRoles = async (env: env, payload: DiscordUserRole[]): Pro
 	try {
 		const url = config(env).DISCORD_BOT_API_URL;
 		const token = await generateDiscordBotJwt(env);
-
-		const response = await env.DISCORD_BOT.fetch(`${url}/roles?action=add-role`, {
+		const devQuery = env.DEV ? '&dev=true' : '';
+		const response = await env.DISCORD_BOT.fetch(`${url}/roles?action=add-role${devQuery}`, {
 			method: 'POST',
 			headers: {
 				Authorization: `Bearer ${token}`,

@@ -21,11 +21,12 @@ export const generateJwt = async (env: env) => {
 
 export const generateDiscordBotJwt = async (env: env) => {
 	try {
+		const privateKey = env.DEV ? env.DISCORD_SERVICE_PRIVATE_KEY : env.DISCORD_BOT_PRIVATE_KEY;
 		const authToken = await jwt.sign(
 			{
 				exp: Math.floor(Date.now() / 1000) + 60,
 			},
-			env.DISCORD_BOT_PRIVATE_KEY,
+			privateKey,
 			{ algorithm: 'RS256' },
 		);
 		return authToken;
