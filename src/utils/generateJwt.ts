@@ -21,6 +21,7 @@ export const generateJwt = async (env: env) => {
 
 export const generateDiscordBotJwt = async (env: env) => {
 	try {
+		//TODO(@Ajeyakrishna-k): remove dev flag https://github.com/Real-Dev-Squad/discord-slash-commands/issues/193
 		const privateKey = env.DEV ? env.DISCORD_SERVICE_PRIVATE_KEY : env.DISCORD_BOT_PRIVATE_KEY;
 		const authToken = await jwt.sign(
 			{
