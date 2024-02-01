@@ -21,6 +21,7 @@ jobs:
             DISCORD_BOT_PRIVATE_KEY
             DISCORD_BOT_API_URL
             DISCORD_SERVICE_PRIVATE_KEY
+            FF_CRON_DISCORD_KEY_PAIR_FLOW
         env:
           CLOUDFLARE_API_TOKEN: ${{secrets.CLOUDFLARE_API_TOKEN}}
           CLOUDFLARE_ACCOUNT_ID: ${{secrets.CLOUDFLARE_ACCOUNT_ID}}

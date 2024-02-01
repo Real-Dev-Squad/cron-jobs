@@ -30,6 +30,15 @@ describe('addMissedUpdatesRole', () => {
 		expect(updateUserRoles).toHaveBeenCalledTimes(2);
 	});
 
+	it('should call getMissedUpdatesUsers and updateUserRoles when theres only one user', async () => {
+		const usersMockData = { ...missedUpdatesUsersMockWithoutCursor };
+		usersMockData.usersToAddRole = usersMockData.usersToAddRole.slice(0, 1);
+		(getMissedUpdatesUsers as jest.Mock).mockResolvedValueOnce(usersMockData);
+		await addMissedUpdatesRole({});
+		expect(getMissedUpdatesUsers).toHaveBeenCalledTimes(1);
+		expect(updateUserRoles).toHaveBeenCalledTimes(1);
+	});
+
 	it('should not call updateUserRoles when there are no users to add role', async () => {
 		(getMissedUpdatesUsers as jest.Mock).mockResolvedValueOnce(missedUpdatesUsersMockWithNoUsers);
 
