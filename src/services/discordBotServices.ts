@@ -6,8 +6,9 @@ export const updateUserRoles = async (env: env, payload: DiscordUserRole[]): Pro
 	try {
 		const url = config(env).DISCORD_BOT_API_URL;
 		const token = await generateDiscordBotJwt(env);
-
-		const response = await env.DISCORD_BOT.fetch(`${url}/roles?action=add-role`, {
+		//TODO(@Ajeyakrishna-k): remove dev flag https://github.com/Real-Dev-Squad/discord-slash-commands/issues/193
+		const devQuery = env.FF_CRON_DISCORD_KEY_PAIR_FLOW === 'true' ? '&dev=true' : '';
+		const response = await env.DISCORD_BOT.fetch(`${url}/roles?action=add-role${devQuery}`, {
 			method: 'POST',
 			headers: {
 				Authorization: `Bearer ${token}`,

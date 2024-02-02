@@ -72,7 +72,7 @@ export const addMissedUpdatesRole = async (env: env) => {
 
 			const missedUpdatesUsers = await getMissedUpdatesUsers(env, cursor);
 
-			if (!!missedUpdatesUsers && missedUpdatesUsers.usersToAddRole?.length > 1) {
+			if (!!missedUpdatesUsers && missedUpdatesUsers.usersToAddRole?.length >= 1) {
 				const discordUserIdRoleIdList: DiscordUserRole[] = missedUpdatesUsers.usersToAddRole.map((userId) => ({
 					userid: userId,
 					roleid: config(env).MISSED_UPDATES_ROLE_ID,
