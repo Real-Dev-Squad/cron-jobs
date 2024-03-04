@@ -39,3 +39,14 @@ export type DiscordRoleUpdatedList = {
 	roleid: string;
 	success: boolean;
 };
+export type UserStatusResponse = {
+	message: string;
+	data: {
+		totalUsers: number;
+		totalIdleUsers: number;
+		totalActiveUsers: number;
+		totalUnprocessedUsers: number;
+		unprocessedUsers: Array<unknown>;
+		users: Array<unknown>;
+	};
+};

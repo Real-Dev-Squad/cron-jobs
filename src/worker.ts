@@ -1,8 +1,19 @@
-import { addMissedUpdatesRole, callDiscordNicknameBatchUpdate } from './handlers/scheduledEventHandler';
+import {
+	addMissedUpdatesRole,
+	callDiscordNicknameBatchUpdate,
+	syncExternalAccounts,
+	syncIdle7dUsers,
+	syncIdleUsers,
+	syncNickNames,
+	syncOnboarding31dPlusUsers,
+	syncUnverifiedUsers,
+	syncUsersStatus,
+} from './handlers/scheduledEventHandler';
 import { env } from './types/global.types';
 
 const EVERY_6_HOURS = '0 */6 * * *';
 const EVERY_11_HOURS = '0 */11 * * *';
+const EVERY_1_HOUR = '0 */1 * * *';
 
 export default {
 	// eslint-disable-next-line no-unused-vars
@@ -14,8 +25,22 @@ export default {
 			case EVERY_11_HOURS: {
 				return await addMissedUpdatesRole(env);
 			}
-			default:
+
+			case EVERY_1_HOUR: {
+				await syncUsersStatus(env);
+				await syncExternalAccounts(env);
+				await syncUnverifiedUsers(env);
+				await syncIdleUsers(env);
+				await syncNickNames(env);
+				await syncIdle7dUsers(env);
+				await syncOnboarding31dPlusUsers(env);
+				break;
+			}
+
+			default: {
 				console.error('Unknown Trigger Value!');
+				break;
+			}
 		}
 	},
 	// We need to keep all 3 parameters in this format even if they are not used as as cloudflare workers need them to be present So we are disabling eslint rule of no-unused-vars
