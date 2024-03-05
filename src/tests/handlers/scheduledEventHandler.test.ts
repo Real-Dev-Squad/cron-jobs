@@ -1,4 +1,5 @@
 import {
+	syncExternalAccounts,
 	syncIdle7dUsers,
 	syncIdleUsers,
 	syncNickNames,
@@ -112,6 +113,10 @@ describe('sync apis', () => {
 
 	it('should sync idle users', async () => {
 		await testSyncFunction(syncIdleUsers, 'discord-actions/group-idle', 'PUT');
+	});
+
+	it('should sync external accounts', async () => {
+		await testSyncFunction(syncExternalAccounts, 'external-accounts/users?action=discord-users-sync', 'POST');
 	});
 
 	it('should sync nicknames', async () => {
