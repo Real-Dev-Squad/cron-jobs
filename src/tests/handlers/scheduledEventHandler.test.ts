@@ -27,7 +27,7 @@ afterAll(() => {
 describe('syncUsersStatus', () => {
 	const mockEnv: env = {
 		CURRENT_ENVIRONMENT: {
-			RDS_BASE_API_URL: 'staging',
+			RDS_BASE_API_URL: 'default',
 		},
 	};
 

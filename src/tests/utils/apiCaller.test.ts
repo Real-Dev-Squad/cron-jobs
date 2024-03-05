@@ -1,4 +1,4 @@
-import { RDS_BASE_STAGING_API_URL } from '../../constants/urls';
+import { RDS_BASE_DEVELOPMENT_API_URL } from '../../constants/urls';
 import { env } from '../../types/global.types';
 import { apiCaller } from '../../utils/apiCaller';
 import { generateJwt } from '../../utils/generateJwt';
@@ -10,7 +10,7 @@ jest.mock('../../utils/generateJwt', () => ({
 describe('apiCaller', () => {
 	const mockEnv: env = {
 		CURRENT_ENVIRONMENT: {
-			RDS_BASE_API_URL: 'staging',
+			RDS_BASE_API_URL: 'default',
 		},
 	};
 
@@ -28,7 +28,7 @@ describe('apiCaller', () => {
 		expect(generateJwt).toHaveBeenCalledWith(mockEnv);
 
 		expect(result).toEqual({ success: true });
-		expect((globalThis as any).fetch).toHaveBeenCalledWith(`${RDS_BASE_STAGING_API_URL}/users`, {
+		expect((globalThis as any).fetch).toHaveBeenCalledWith(`${RDS_BASE_DEVELOPMENT_API_URL}/users`, {
 			method: 'GET',
 			headers: {
 				Authorization: 'Bearer mocked-token',
@@ -44,7 +44,7 @@ describe('apiCaller', () => {
 		expect(generateJwt).toHaveBeenCalledWith(mockEnv);
 
 		expect(result).toEqual({ success: true });
-		expect((globalThis as any).fetch).toHaveBeenCalledWith(`${RDS_BASE_STAGING_API_URL}/test`, {
+		expect((globalThis as any).fetch).toHaveBeenCalledWith(`${RDS_BASE_DEVELOPMENT_API_URL}/test`, {
 			method: 'POST',
 			headers: {
 				Authorization: 'Bearer mocked-token',
