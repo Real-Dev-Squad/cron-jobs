@@ -14,7 +14,7 @@ describe('rdsBackendService', () => {
 		});
 
 		it('should make a successful API call and return the expected data', async () => {
-			jest.spyOn(global, 'fetch').mockResolvedValueOnce({
+			jest.spyOn(globalThis as any, 'fetch').mockResolvedValueOnce({
 				ok: true,
 				status: 200,
 				json: jest.fn().mockResolvedValueOnce({ ...missedUpdatesUsersResponse, data: missedUpdatesUsersMock }),
@@ -32,7 +32,7 @@ describe('rdsBackendService', () => {
 			expect(result).toEqual({ ...missedUpdatesUsersMock });
 		});
 		it('should make a successful API call with cursor', async () => {
-			jest.spyOn(global, 'fetch').mockResolvedValueOnce({
+			jest.spyOn(globalThis as any, 'fetch').mockResolvedValueOnce({
 				ok: true,
 				status: 200,
 				json: jest.fn().mockResolvedValueOnce({ ...missedUpdatesUsersResponse, data: missedUpdatesUsersMock }),
@@ -51,7 +51,7 @@ describe('rdsBackendService', () => {
 			expect(result).toEqual({ ...missedUpdatesUsersMock });
 		});
 		it('should throw error when api call fails', async () => {
-			jest.spyOn(global, 'fetch').mockResolvedValueOnce({
+			jest.spyOn(globalThis as any, 'fetch').mockResolvedValueOnce({
 				ok: false,
 				status: 400,
 			} as unknown as Response);
@@ -60,7 +60,7 @@ describe('rdsBackendService', () => {
 
 		it('should handle unknown errors', async () => {
 			const consoleSpy = jest.spyOn(console, 'error');
-			jest.spyOn(global, 'fetch').mockRejectedValueOnce(new Error('Error occurred'));
+			jest.spyOn(globalThis as any, 'fetch').mockRejectedValueOnce(new Error('Error occurred'));
 			await expect(getMissedUpdatesUsers({}, cursor)).rejects.toThrow('Error occurred');
 			expect(consoleSpy).toHaveBeenCalledWith('Error occurred while fetching discord user details');
 		});
