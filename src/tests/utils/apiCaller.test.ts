@@ -2,6 +2,7 @@ import { RDS_BASE_DEVELOPMENT_API_URL } from '../../constants/urls';
 import { env } from '../../types/global.types';
 import { apiCaller } from '../../utils/apiCaller';
 import { generateJwt } from '../../utils/generateJwt';
+import * as generateJwtModule from '../../utils/generateJwt';
 
 jest.mock('../../utils/generateJwt', () => ({
 	generateJwt: jest.fn().mockResolvedValue('mocked-token'),
@@ -66,5 +67,12 @@ describe('apiCaller', () => {
 		expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
 
 		consoleErrorSpy.mockRestore();
+	});
+
+	it('should handle the case where generateJwt returns undefined and throw an error', async () => {
+		const generateJwtMock = jest.spyOn(generateJwtModule, 'generateJwt');
+		generateJwtMock.mockImplementationOnce(() => Promise.reject(new Error('Generate JWT error')));
+
+		await expect(apiCaller(mockEnv, 'someEndpoint', 'GET')).rejects.toThrow('Generate JWT error');
 	});
 });
