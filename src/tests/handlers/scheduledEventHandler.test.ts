@@ -50,7 +50,6 @@ describe('syncUsersStatus', () => {
 		expect(apiCallerFunction).toHaveBeenCalledWith(mockEnv, 'users/status/update', 'PATCH');
 		expect(apiCallerFunction).toHaveBeenCalledWith(mockEnv, 'users/status?aggregate=true', 'GET');
 		expect(apiCallerFunction).toHaveBeenCalledWith(mockEnv, 'users/status/batch', 'PATCH', {
-			method: 'PATCH',
 			body: JSON.stringify({ users: [{ userId: 'asdoiuahow212' }] }),
 		});
 		expect(apiCallerFunction).toHaveBeenCalledTimes(3);

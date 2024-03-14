@@ -108,7 +108,6 @@ export const syncUsersStatus = async (env: env): Promise<any | null> => {
 		}
 
 		const response = await apiCaller(env, 'users/status/batch', 'PATCH', {
-			method: 'PATCH',
 			body: JSON.stringify({ users: idleUsersData.data.users }),
 		});
 
