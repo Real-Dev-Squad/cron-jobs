@@ -4,7 +4,6 @@ import {
 	syncExternalAccounts,
 	syncIdle7dUsers,
 	syncIdleUsers,
-	syncNickNames,
 	syncOnboarding31dPlusUsers,
 	syncUnverifiedUsers,
 	syncUsersStatus,
@@ -29,7 +28,7 @@ export default {
 
 			case EVERY_20_MINUTES: {
 				await syncIdleUsers(env);
-				await syncNickNames(env);
+				// await syncNickNames(env); TODO: Enable it once changes from website-backend is merged
 				await syncIdle7dUsers(env);
 				await syncOnboarding31dPlusUsers(env);
 				console.log('Worker for syncing idle users, nicknames, idle 7d users, and onboarding 31d+ users has completed.');
