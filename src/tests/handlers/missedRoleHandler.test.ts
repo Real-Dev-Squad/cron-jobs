@@ -1,4 +1,4 @@
-import { addMissedUpdatesRole } from '../../handlers/scheduledEventHandler';
+import { addMissedUpdatesRoleHandler } from '../../handlers/scheduledEventHandler';
 import { updateUserRoles } from '../../services/discordBotServices';
 import { getMissedUpdatesUsers } from '../../services/rdsBackendService';
 import {
@@ -13,7 +13,7 @@ jest.mock('.../../../../services/rdsBackendService', () => ({
 jest.mock('.../../../../services/discordBotServices', () => ({
 	updateUserRoles: jest.fn(),
 }));
-describe('addMissedUpdatesRole', () => {
+describe('addMissedUpdatesRoleHandler', () => {
 	beforeEach(() => {
 		jest.resetAllMocks();
 	});
@@ -25,7 +25,7 @@ describe('addMissedUpdatesRole', () => {
 		(getMissedUpdatesUsers as jest.Mock)
 			.mockResolvedValueOnce(missedUpdatesUsersMock)
 			.mockResolvedValueOnce(missedUpdatesUsersMockWithoutCursor);
-		await addMissedUpdatesRole({});
+		await addMissedUpdatesRoleHandler({});
 		expect(getMissedUpdatesUsers).toHaveBeenCalledTimes(2);
 		expect(updateUserRoles).toHaveBeenCalledTimes(2);
 	});
@@ -34,7 +34,7 @@ describe('addMissedUpdatesRole', () => {
 		const usersMockData = { ...missedUpdatesUsersMockWithoutCursor };
 		usersMockData.usersToAddRole = usersMockData.usersToAddRole.slice(0, 1);
 		(getMissedUpdatesUsers as jest.Mock).mockResolvedValueOnce(usersMockData);
-		await addMissedUpdatesRole({});
+		await addMissedUpdatesRoleHandler({});
 		expect(getMissedUpdatesUsers).toHaveBeenCalledTimes(1);
 		expect(updateUserRoles).toHaveBeenCalledTimes(1);
 	});
@@ -42,7 +42,7 @@ describe('addMissedUpdatesRole', () => {
 	it('should not call updateUserRoles when there are no users to add role', async () => {
 		(getMissedUpdatesUsers as jest.Mock).mockResolvedValueOnce(missedUpdatesUsersMockWithNoUsers);
 
-		await addMissedUpdatesRole({});
+		await addMissedUpdatesRoleHandler({});
 		expect(getMissedUpdatesUsers).toHaveBeenCalledTimes(1);
 		expect(updateUserRoles).toHaveBeenCalledTimes(0);
 	});
@@ -51,7 +51,7 @@ describe('addMissedUpdatesRole', () => {
 		const mockValue: any = { ...missedUpdatesUsersMockWithoutCursor, usersToAddRole: new Array(75).fill('id') };
 		(getMissedUpdatesUsers as jest.Mock).mockResolvedValueOnce(mockValue);
 
-		await addMissedUpdatesRole({});
+		await addMissedUpdatesRoleHandler({});
 		expect(getMissedUpdatesUsers).toHaveBeenCalledTimes(1);
 		expect(updateUserRoles).toHaveBeenCalledTimes(3);
 	});
@@ -59,7 +59,7 @@ describe('addMissedUpdatesRole', () => {
 	it('should handle errors', async () => {
 		(getMissedUpdatesUsers as jest.Mock).mockRejectedValueOnce(new Error('Error fetching missed updates users'));
 		const consoleSpy = jest.spyOn(console, 'error');
-		await addMissedUpdatesRole({});
+		await addMissedUpdatesRoleHandler({});
 		expect(consoleSpy).toHaveBeenCalledWith('Error while adding missed updates roles');
 	});
 
@@ -68,7 +68,7 @@ describe('addMissedUpdatesRole', () => {
 		const consoleSpy = jest.spyOn(console, 'error');
 		const mockValue: any = { ...missedUpdatesUsersMockWithoutCursor, usersToAddRole: new Array(75).fill('id') };
 		(getMissedUpdatesUsers as jest.Mock).mockResolvedValueOnce(mockValue);
-		await addMissedUpdatesRole({});
+		await addMissedUpdatesRoleHandler({});
 		expect(getMissedUpdatesUsers).toHaveBeenCalledTimes(1);
 		expect(consoleSpy).toHaveBeenCalledTimes(1);
 		expect(updateUserRoles).toHaveBeenCalledTimes(3);
