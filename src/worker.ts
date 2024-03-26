@@ -1,12 +1,12 @@
 import {
-	addMissedUpdatesRole,
-	callDiscordNicknameBatchUpdate,
-	syncExternalAccounts,
-	syncIdle7dUsers,
-	syncIdleUsers,
-	syncOnboarding31dPlusUsers,
-	syncUnverifiedUsers,
-	syncUsersStatus,
+	addMissedUpdatesRoleHandler,
+	callDiscordNicknameBatchUpdateHandler,
+	syncExternalAccountsHandler,
+	syncIdle7dUsersHandler,
+	syncIdleUsersHandler,
+	syncOnboarding31dPlusUsersHandler,
+	syncUnverifiedUsersHandler,
+	syncUsersStatusHandler,
 } from './handlers/scheduledEventHandler';
 import { env } from './types/global.types';
 
@@ -18,19 +18,19 @@ export default {
 	async scheduled(req: ScheduledController, env: env, ctx: ExecutionContext) {
 		switch (req.cron) {
 			case EVERY_11_HOURS: {
-				callDiscordNicknameBatchUpdate(env);
-				addMissedUpdatesRole(env);
+				callDiscordNicknameBatchUpdateHandler(env);
+				addMissedUpdatesRoleHandler(env);
 				break;
 			}
 
 			case EVERY_20_MINUTES: {
-				syncIdleUsers(env);
-				//  syncNickNames(env); TODO: Enable it once changes from website-backend is merged
-				syncIdle7dUsers(env);
-				syncOnboarding31dPlusUsers(env);
-				syncUsersStatus(env);
-				syncExternalAccounts(env);
-				syncUnverifiedUsers(env);
+				syncIdleUsersHandler(env);
+				//  syncNickNamesHandler(env); TODO: Enable it once changes from website-backend is merged
+				syncIdle7dUsersHandler(env);
+				syncOnboarding31dPlusUsersHandler(env);
+				syncUsersStatusHandler(env);
+				syncExternalAccountsHandler(env);
+				syncUnverifiedUsersHandler(env);
 				console.log(`Worker for syncing idle users, nicknames, idle 7d users, and onboarding 31d+ users has completed.
 				Worker for syncing user status, external accounts, and unverified users has completed.`);
 				break;

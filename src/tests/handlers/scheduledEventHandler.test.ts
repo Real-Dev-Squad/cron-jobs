@@ -1,11 +1,11 @@
 import {
-	syncExternalAccounts,
-	syncIdle7dUsers,
-	syncIdleUsers,
-	syncNickNames,
-	syncOnboarding31dPlusUsers,
-	syncUnverifiedUsers,
-	syncUsersStatus,
+	syncExternalAccountsHandler,
+	syncIdle7dUsersHandler,
+	syncIdleUsersHandler,
+	syncNickNamesHandler,
+	syncOnboarding31dPlusUsersHandler,
+	syncUnverifiedUsersHandler,
+	syncUsersStatusHandler,
 } from '../../handlers/scheduledEventHandler';
 import { env } from '../../types/global.types';
 import * as apiCallerModule from '../../utils/apiCaller';
@@ -37,30 +37,30 @@ describe('sync apis', () => {
 	};
 
 	it('should sync users status', async () => {
-		testSyncFunction(syncUsersStatus, 'users/status/sync', 'PATCH');
+		testSyncFunction(syncUsersStatusHandler, 'users/status/sync', 'PATCH');
 	});
 
 	it('should sync unverified users', async () => {
-		testSyncFunction(syncUnverifiedUsers, 'users', 'POST');
+		testSyncFunction(syncUnverifiedUsersHandler, 'users', 'POST');
 	});
 
 	it('should sync idle users', async () => {
-		testSyncFunction(syncIdleUsers, 'discord-actions/group-idle', 'PUT');
+		testSyncFunction(syncIdleUsersHandler, 'discord-actions/group-idle', 'PUT');
 	});
 
 	it('should sync external accounts', async () => {
-		testSyncFunction(syncExternalAccounts, 'external-accounts/users?action=discord-users-sync', 'POST');
+		testSyncFunction(syncExternalAccountsHandler, 'external-accounts/users?action=discord-users-sync', 'POST');
 	});
 
 	it('should sync nicknames', async () => {
-		testSyncFunction(syncNickNames, 'discord-actions/nicknames/sync?dev=true', 'POST');
+		testSyncFunction(syncNickNamesHandler, 'discord-actions/nicknames/sync?dev=true', 'POST');
 	});
 
 	it('should sync idle 7d users', async () => {
-		testSyncFunction(syncIdle7dUsers, 'discord-actions/group-idle-7d', 'PUT');
+		testSyncFunction(syncIdle7dUsersHandler, 'discord-actions/group-idle-7d', 'PUT');
 	});
 
 	it('should sync onboarding 31d+ users', async () => {
-		testSyncFunction(syncOnboarding31dPlusUsers, 'discord-actions/group-onboarding-31d-plus', 'PUT');
+		testSyncFunction(syncOnboarding31dPlusUsersHandler, 'discord-actions/group-onboarding-31d-plus', 'PUT');
 	});
 });
