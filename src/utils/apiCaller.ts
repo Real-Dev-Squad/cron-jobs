@@ -17,11 +17,16 @@ const createOptions = async (env: env): Promise<Record<string, any>> => {
 	}
 };
 
-export const fireAndForgetApiCall = async (env: env, endpoint: string, method: string, options?: Record<string, any>): Promise<void> => {
+export const fireAndForgetApiCall = async (
+	env: env,
+	endpoint: string,
+	method: string,
+	options?: Record<string, any>,
+): Promise<Response> => {
 	const url = config(env).RDS_BASE_API_URL;
 	try {
 		const requestOptions = await createOptions(env);
-		fetch(`${url}/${endpoint}`, { method, ...requestOptions, ...options });
+		return fetch(`${url}/${endpoint}`, { method, ...requestOptions, ...options });
 	} catch (error) {
 		console.error(`Error during fire and forget API call: ${error}`);
 		throw error;

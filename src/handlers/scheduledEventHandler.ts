@@ -96,30 +96,22 @@ export const addMissedUpdatesRoleHandler = async (env: env) => {
 	}
 };
 
-export const syncUsersStatusHandler = async (env: env) => {
-	fireAndForgetApiCall(env, 'users/status/sync', 'PATCH');
-};
+export const syncApiHandler = async (env: env) => {
+	const handlers = [
+		fireAndForgetApiCall(env, 'users/status/sync', 'PATCH'),
+		fireAndForgetApiCall(env, 'external-accounts/users?action=discord-users-sync', 'POST'),
+		fireAndForgetApiCall(env, 'users', 'POST'),
+		fireAndForgetApiCall(env, 'discord-actions/nicknames/sync?dev=true', 'POST'),
+		fireAndForgetApiCall(env, 'discord-actions/group-idle-7d', 'PUT'),
+		fireAndForgetApiCall(env, 'discord-actions/group-onboarding-31d-plus', 'PUT'),
+	];
 
-export const syncExternalAccountsHandler = async (env: env) => {
-	fireAndForgetApiCall(env, 'external-accounts/users?action=discord-users-sync', 'POST');
-};
-
-export const syncUnverifiedUsersHandler = async (env: env) => {
-	fireAndForgetApiCall(env, 'users', 'POST');
-};
-
-export const syncIdleUsersHandler = async (env: env) => {
-	fireAndForgetApiCall(env, 'discord-actions/group-idle', 'PUT');
-};
-
-export const syncNickNamesHandler = async (env: env) => {
-	fireAndForgetApiCall(env, 'discord-actions/nicknames/sync?dev=true', 'POST');
-};
-
-export const syncIdle7dUsersHandler = async (env: env) => {
-	fireAndForgetApiCall(env, 'discord-actions/group-idle-7d', 'PUT');
-};
-
-export const syncOnboarding31dPlusUsersHandler = async (env: env) => {
-	fireAndForgetApiCall(env, 'discord-actions/group-onboarding-31d-plus', 'PUT');
+	try {
+		await Promise.all(handlers);
+		console.log(
+			`Worker for syncing idle users, nicknames, idle 7d users, and onboarding 31d+ users has completed. Worker for syncing user status, external accounts, and unverified users has completed.`,
+		);
+	} catch (error) {
+		console.error('Error occurred during Sync API calls:', error);
+	}
 };

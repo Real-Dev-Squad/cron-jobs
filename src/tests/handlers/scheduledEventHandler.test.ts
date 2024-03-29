@@ -1,12 +1,4 @@
-import {
-	syncExternalAccountsHandler,
-	syncIdle7dUsersHandler,
-	syncIdleUsersHandler,
-	syncNickNamesHandler,
-	syncOnboarding31dPlusUsersHandler,
-	syncUnverifiedUsersHandler,
-	syncUsersStatusHandler,
-} from '../../handlers/scheduledEventHandler';
+import { syncApiHandler } from '../../handlers/scheduledEventHandler';
 import { env } from '../../types/global.types';
 import * as apiCallerModule from '../../utils/apiCaller';
 
@@ -29,38 +21,26 @@ describe('sync apis', () => {
 		},
 	};
 
-	const testSyncFunction = async (syncFunction: Function, endpoint: string, method: string) => {
-		await syncFunction(mockEnv);
+	it('should call all sync functions', async () => {
+		await syncApiHandler(mockEnv);
 
-		expect(apiCallerModule.fireAndForgetApiCall).toHaveBeenCalledWith(mockEnv, endpoint, method);
-		expect(apiCallerModule.fireAndForgetApiCall).toHaveBeenCalledTimes(1);
-	};
-
-	it('should sync users status', async () => {
-		testSyncFunction(syncUsersStatusHandler, 'users/status/sync', 'PATCH');
+		expect(apiCallerModule.fireAndForgetApiCall).toHaveBeenCalledWith(mockEnv, 'users/status/sync', 'PATCH');
+		expect(apiCallerModule.fireAndForgetApiCall).toHaveBeenCalledWith(mockEnv, 'external-accounts/users?action=discord-users-sync', 'POST');
+		expect(apiCallerModule.fireAndForgetApiCall).toHaveBeenCalledWith(mockEnv, 'users', 'POST');
+		expect(apiCallerModule.fireAndForgetApiCall).toHaveBeenCalledWith(mockEnv, 'discord-actions/nicknames/sync?dev=true', 'POST');
+		expect(apiCallerModule.fireAndForgetApiCall).toHaveBeenCalledWith(mockEnv, 'discord-actions/group-idle-7d', 'PUT');
+		expect(apiCallerModule.fireAndForgetApiCall).toHaveBeenCalledWith(mockEnv, 'discord-actions/group-onboarding-31d-plus', 'PUT');
+		expect(apiCallerModule.fireAndForgetApiCall).toHaveBeenCalledTimes(6);
 	});
 
-	it('should sync unverified users', async () => {
-		testSyncFunction(syncUnverifiedUsersHandler, 'users', 'POST');
-	});
+	it('should catch errors during API calls', async () => {
+		const mockError = new Error('API error');
+		(apiCallerModule.fireAndForgetApiCall as jest.MockedFunction<typeof apiCallerModule.fireAndForgetApiCall>).mockRejectedValueOnce(
+			mockError,
+		);
 
-	it('should sync idle users', async () => {
-		testSyncFunction(syncIdleUsersHandler, 'discord-actions/group-idle', 'PUT');
-	});
+		await syncApiHandler(mockEnv);
 
-	it('should sync external accounts', async () => {
-		testSyncFunction(syncExternalAccountsHandler, 'external-accounts/users?action=discord-users-sync', 'POST');
-	});
-
-	it('should sync nicknames', async () => {
-		testSyncFunction(syncNickNamesHandler, 'discord-actions/nicknames/sync?dev=true', 'POST');
-	});
-
-	it('should sync idle 7d users', async () => {
-		testSyncFunction(syncIdle7dUsersHandler, 'discord-actions/group-idle-7d', 'PUT');
-	});
-
-	it('should sync onboarding 31d+ users', async () => {
-		testSyncFunction(syncOnboarding31dPlusUsersHandler, 'discord-actions/group-onboarding-31d-plus', 'PUT');
+		expect(console.error).toHaveBeenCalledWith('Error occurred during Sync API calls:', mockError);
 	});
 });
