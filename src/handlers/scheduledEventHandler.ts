@@ -153,10 +153,9 @@ export async function filterOrphanTasks(env: env) {
 	let lastOrphanTasksFilteration: string | null = '0';
 	try {
 		lastOrphanTasksFilteration = await namespace.get('ORPHAN_TASKS_UPDATED_TIME');
-		if (lastOrphanTasksFilteration === null) {
-			console.error('Error while fetching KV "ORPHAN_TASKS_UPDATED_TIME" timestamp');
-		}
+
 		if (!lastOrphanTasksFilteration) {
+			console.error('Error while fetching KV "ORPHAN_TASKS_UPDATED_TIME" timestamp');
 			lastOrphanTasksFilteration = '0';
 		}
 	} catch (err) {
