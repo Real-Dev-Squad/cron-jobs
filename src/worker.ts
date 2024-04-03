@@ -1,6 +1,7 @@
 import {
 	addMissedUpdatesRole,
 	callDiscordNicknameBatchUpdate,
+	filterOrphanTasks,
 	syncExternalAccounts,
 	syncIdle7dUsers,
 	syncIdleUsers,
@@ -20,7 +21,10 @@ export default {
 	async scheduled(req: ScheduledController, env: env, ctx: ExecutionContext) {
 		switch (req.cron) {
 			case EVERY_6_HOURS: {
-				return await callDiscordNicknameBatchUpdate(env);
+				await callDiscordNicknameBatchUpdate(env);
+				await filterOrphanTasks(env);
+				console.log('Worker for filtering the orphan tasks has completed');
+				break;
 			}
 			case EVERY_11_HOURS: {
 				return await addMissedUpdatesRole(env);

@@ -4,7 +4,13 @@ import config from '../config/config';
 import { NAMESPACE_NAME } from '../constants';
 import { updateUserRoles } from '../services/discordBotServices';
 import { getMissedUpdatesUsers } from '../services/rdsBackendService';
-import { DiscordUserRole, env, NicknameUpdateResponseType, UserStatusResponse } from '../types/global.types';
+import {
+	DiscordUserRole,
+	env,
+	NicknameUpdateResponseType,
+	OrphanTasksStatusUpdateResponseType,
+	UserStatusResponse,
+} from '../types/global.types';
 import { apiCaller } from '../utils/apiCaller';
 import { chunks } from '../utils/arrayUtils';
 import { generateJwt } from '../utils/generateJwt';
@@ -141,3 +147,51 @@ export const syncIdle7dUsers = async (env: env) => {
 export const syncOnboarding31dPlusUsers = async (env: env) => {
 	return await apiCaller(env, 'discord-actions/group-onboarding-31d-plus', 'PUT');
 };
+
+export async function filterOrphanTasks(env: env) {
+	const namespace = env[NAMESPACE_NAME] as unknown as KVNamespace;
+	let lastOrphanTasksFilterationTimestamp: string | null = '0'; // O means it will take the oldest unix timestamp
+	try {
+		lastOrphanTasksFilterationTimestamp = await namespace.get('ORPHAN_TASKS_UPDATED_TIME');
+
+		if (!lastOrphanTasksFilterationTimestamp) {
+			console.log(`Empty KV  ORPHAN_TASKS_UPDATED_TIME: ${lastOrphanTasksFilterationTimestamp}`);
+			lastOrphanTasksFilterationTimestamp = '0'; // O means it will take the oldest unix timestamp
+		}
+	} catch (err) {
+		console.error(err, 'Error while fetching the timestamp of last orphan tasks filteration');
+		throw err;
+	}
+
+	const url = config(env).RDS_BASE_API_URL;
+	let token;
+	try {
+		token = await generateJwt(env);
+	} catch (err) {
+		console.error(`Error while generating JWT token: ${err}`);
+		throw err;
+	}
+	const response = await fetch(`${url}/tasks/orphanTasks`, {
+		method: 'POST',
+		headers: {
+			Authorization: `Bearer ${token}`,
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			lastOrphanTasksFilterationTimestamp,
+		}),
+	});
+	if (!response.ok) {
+		throw new Error('Error while trying to update status of orphan tasks to backlog');
+	}
+
+	const data: OrphanTasksStatusUpdateResponseType = await response.json();
+
+	try {
+		await namespace.put('ORPHAN_TASKS_UPDATED_TIME', Date.now().toString());
+	} catch (err) {
+		console.error('Error while trying to update the last orphan tasks filteration timestamp');
+	}
+
+	return data;
+}
