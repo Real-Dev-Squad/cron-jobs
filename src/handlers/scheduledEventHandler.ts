@@ -150,13 +150,13 @@ export const syncOnboarding31dPlusUsers = async (env: env) => {
 
 export async function filterOrphanTasks(env: env) {
 	const namespace = env[NAMESPACE_NAME] as unknown as KVNamespace;
-	let lastOrphanTasksFilteration: string | null = '0';
+	let lastOrphanTasksFilterationTimestamp: string | null = '0'; // O means it will take the oldest unix timestamp
 	try {
-		lastOrphanTasksFilteration = await namespace.get('ORPHAN_TASKS_UPDATED_TIME');
+		lastOrphanTasksFilterationTimestamp = await namespace.get('ORPHAN_TASKS_UPDATED_TIME');
 
-		if (!lastOrphanTasksFilteration) {
-			console.log(`Empty KV  ORPHAN_TASKS_UPDATED_TIME: ${lastOrphanTasksFilteration}`);
-			lastOrphanTasksFilteration = '0';
+		if (!lastOrphanTasksFilterationTimestamp) {
+			console.log(`Empty KV  ORPHAN_TASKS_UPDATED_TIME: ${lastOrphanTasksFilterationTimestamp}`);
+			lastOrphanTasksFilterationTimestamp = '0'; // O means it will take the oldest unix timestamp
 		}
 	} catch (err) {
 		console.error(err, 'Error while fetching the timestamp of last orphan tasks filteration');
@@ -178,7 +178,7 @@ export async function filterOrphanTasks(env: env) {
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({
-			lastOrphanTasksFilteration,
+			lastOrphanTasksFilterationTimestamp,
 		}),
 	});
 	if (!response.ok) {
