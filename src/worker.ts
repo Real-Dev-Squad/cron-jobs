@@ -1,20 +1,20 @@
 import { addMissedUpdatesRoleHandler, callDiscordNicknameBatchUpdateHandler, syncApiHandler } from './handlers/scheduledEventHandler';
 import { env } from './types/global.types';
 
-const EVERY_11_HOURS = '0 */11 * * *';
-const EVERY_20_MINUTES = '*/20 * * * *';
+const EVERY_12_HOURS = '0 */12 * * *';
+const EVERY_30_MINUTES = '*/30 * * * *';
 
 export default {
 	// eslint-disable-next-line no-unused-vars
 	async scheduled(req: ScheduledController, env: env, ctx: ExecutionContext) {
 		switch (req.cron) {
-			case EVERY_11_HOURS: {
+			case EVERY_12_HOURS: {
 				await callDiscordNicknameBatchUpdateHandler(env);
 				await addMissedUpdatesRoleHandler(env);
 				break;
 			}
 
-			case EVERY_20_MINUTES: {
+			case EVERY_30_MINUTES: {
 				await syncApiHandler(env);
 				break;
 			}
