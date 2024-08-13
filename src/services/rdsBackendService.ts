@@ -7,7 +7,7 @@ export const getMissedUpdatesUsers = async (env: env, cursor: string | undefined
 		const baseUrl = config(env).RDS_BASE_API_URL;
 
 		const url = new URL(`${baseUrl}/tasks/users/discord`);
-		url.searchParams.append('q', 'status:missed-updates');
+		url.searchParams.append('q', 'status:missed-updates -days-count:3');
 		if (cursor) {
 			url.searchParams.append('cursor', cursor);
 		}
@@ -26,7 +26,7 @@ export const getMissedUpdatesUsers = async (env: env, cursor: string | undefined
 		const responseData: DiscordUsersResponse = await response.json();
 		return responseData?.data;
 	} catch (error) {
-		console.error('Error occurrent while fetching discord user details');
+		console.error('Error occurred while fetching discord user details');
 		throw error;
 	}
 };

@@ -72,7 +72,7 @@ export const addMissedUpdatesRole = async (env: env) => {
 
 			const missedUpdatesUsers = await getMissedUpdatesUsers(env, cursor);
 
-			if (!!missedUpdatesUsers && missedUpdatesUsers.usersToAddRole?.length > 1) {
+			if (!!missedUpdatesUsers && missedUpdatesUsers.usersToAddRole?.length >= 1) {
 				const discordUserIdRoleIdList: DiscordUserRole[] = missedUpdatesUsers.usersToAddRole.map((userId) => ({
 					userid: userId,
 					roleid: config(env).MISSED_UPDATES_ROLE_ID,
@@ -89,6 +89,7 @@ export const addMissedUpdatesRole = async (env: env) => {
 			}
 			cursor = missedUpdatesUsers?.cursor;
 		}
+		// add logs for the results https://github.com/Real-Dev-Squad/website-backend/issues/1784
 	} catch (err) {
 		console.error('Error while adding missed updates roles');
 	}

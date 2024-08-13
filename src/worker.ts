@@ -2,7 +2,7 @@ import { addMissedUpdatesRole, callDiscordNicknameBatchUpdate } from './handlers
 import { env } from './types/global.types';
 
 const EVERY_6_HOURS = '0 */6 * * *';
-const EVERY_12_HOURS = '0 */12 * * *';
+const EVERY_11_HOURS = '0 */11 * * *';
 
 export default {
 	// eslint-disable-next-line no-unused-vars
@@ -11,7 +11,7 @@ export default {
 			case EVERY_6_HOURS: {
 				return await callDiscordNicknameBatchUpdate(env);
 			}
-			case EVERY_12_HOURS: {
+			case EVERY_11_HOURS: {
 				return await addMissedUpdatesRole(env);
 			}
 			default:
