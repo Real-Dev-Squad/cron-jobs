@@ -19,6 +19,13 @@ export type NicknameUpdateResponseType = {
 		unsuccessfulNicknameUpdates: number;
 	};
 };
+
+export type OrphanTasksStatusUpdateResponseType = {
+	message: string;
+	data: {
+		orphanTasksUpdatedCount: number;
+	};
+};
 export type DiscordUsersResponse = {
 	message: string;
 	data: DiscordUserIdList;
@@ -38,4 +45,15 @@ export type DiscordRoleUpdatedList = {
 	userid: string;
 	roleid: string;
 	success: boolean;
+};
+export type UserStatusResponse = {
+	message: string;
+	data: {
+		totalUsers: number;
+		totalIdleUsers: number;
+		totalActiveUsers: number;
+		totalUnprocessedUsers: number;
+		unprocessedUsers: Array<unknown>;
+		users: Array<unknown>;
+	};
 };
