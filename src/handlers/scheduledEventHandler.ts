@@ -5,6 +5,7 @@ import { NAMESPACE_NAME } from '../constants';
 import { updateUserRoles } from '../services/discordBotServices';
 import { getMissedUpdatesUsers } from '../services/rdsBackendService';
 import { DiscordUserRole, env, NicknameUpdateResponseType } from '../types/global.types';
+import { fireAndForgetApiCall } from '../utils/apiCaller';
 import { chunks } from '../utils/arrayUtils';
 import { generateJwt } from '../utils/generateJwt';
 
@@ -14,7 +15,7 @@ export async function ping(env: env) {
 	return response;
 }
 
-export async function callDiscordNicknameBatchUpdate(env: env) {
+export async function callDiscordNicknameBatchUpdateHandler(env: env) {
 	const namespace = env[NAMESPACE_NAME] as unknown as KVNamespace;
 	let lastNicknameUpdate: string | null = '0';
 	try {
@@ -63,7 +64,7 @@ export async function callDiscordNicknameBatchUpdate(env: env) {
 	return data;
 }
 
-export const addMissedUpdatesRole = async (env: env) => {
+export const addMissedUpdatesRoleHandler = async (env: env) => {
 	const MAX_ROLE_UPDATE = 25;
 	try {
 		let cursor: string | undefined = undefined;
@@ -92,5 +93,25 @@ export const addMissedUpdatesRole = async (env: env) => {
 		// add logs for the results https://github.com/Real-Dev-Squad/website-backend/issues/1784
 	} catch (err) {
 		console.error('Error while adding missed updates roles');
+	}
+};
+
+export const syncApiHandler = async (env: env) => {
+	const handlers = [
+		fireAndForgetApiCall(env, 'users/status/sync', 'PATCH'),
+		fireAndForgetApiCall(env, 'external-accounts/users?action=discord-users-sync', 'POST'),
+		fireAndForgetApiCall(env, 'users', 'POST'),
+		fireAndForgetApiCall(env, 'discord-actions/nicknames/sync?dev=true', 'POST'),
+		fireAndForgetApiCall(env, 'discord-actions/group-idle-7d', 'PUT'),
+		fireAndForgetApiCall(env, 'discord-actions/group-onboarding-31d-plus', 'PUT'),
+	];
+
+	try {
+		await Promise.all(handlers);
+		console.log(
+			`Worker for syncing idle users, nicknames, idle 7d users, and onboarding 31d+ users has completed. Worker for syncing user status, external accounts, and unverified users has completed.`,
+		);
+	} catch (error) {
+		console.error('Error occurred during Sync API calls:', error);
 	}
 };
