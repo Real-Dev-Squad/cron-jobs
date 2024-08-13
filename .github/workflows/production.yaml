@@ -1,5 +1,6 @@
 name: Deploy to production
 on:
+  workflow_dispatch:
   push:
     branches: main
 jobs:
@@ -22,6 +23,7 @@ jobs:
             DISCORD_BOT_API_URL
             DISCORD_SERVICE_PRIVATE_KEY
             FF_CRON_DISCORD_KEY_PAIR_FLOW
+            FF_SELF_PRIVATE_KEY
         env:
           CLOUDFLARE_API_TOKEN: ${{secrets.CLOUDFLARE_API_TOKEN}}
           CLOUDFLARE_ACCOUNT_ID: ${{secrets.CLOUDFLARE_ACCOUNT_ID}}
@@ -31,3 +33,4 @@ jobs:
           DISCORD_BOT_API_URL: ${{secrets.DISCORD_BOT_API_URL}}
           DISCORD_SERVICE_PRIVATE_KEY: ${{secrets.DISCORD_SERVICE_PRIVATE_KEY}}
           FF_CRON_DISCORD_KEY_PAIR_FLOW: ${{vars.FF_CRON_DISCORD_KEY_PAIR_FLOW}}
+          FF_SELF_PRIVATE_KEY: ${{vars.FF_SELF_PRIVATE_KEY}}
