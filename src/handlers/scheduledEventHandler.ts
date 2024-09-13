@@ -4,14 +4,8 @@ import config from '../config/config';
 import { NAMESPACE_NAME } from '../constants';
 import { updateUserRoles } from '../services/discordBotServices';
 import { getMissedUpdatesUsers } from '../services/rdsBackendService';
-import {
-	DiscordUserRole,
-	env,
-	NicknameUpdateResponseType,
-	OrphanTasksStatusUpdateResponseType,
-	UserStatusResponse,
-} from '../types/global.types';
-import { apiCaller } from '../utils/apiCaller';
+import { DiscordUserRole, env, NicknameUpdateResponseType } from '../types/global.types';
+import { fireAndForgetApiCall } from '../utils/apiCaller';
 import { chunks } from '../utils/arrayUtils';
 import { generateJwt } from '../utils/generateJwt';
 
@@ -21,7 +15,7 @@ export async function ping(env: env) {
 	return response;
 }
 
-export async function callDiscordNicknameBatchUpdate(env: env) {
+export async function callDiscordNicknameBatchUpdateHandler(env: env) {
 	const namespace = env[NAMESPACE_NAME] as unknown as KVNamespace;
 	let lastNicknameUpdate: string | null = '0';
 	try {
@@ -70,7 +64,7 @@ export async function callDiscordNicknameBatchUpdate(env: env) {
 	return data;
 }
 
-export const addMissedUpdatesRole = async (env: env) => {
+export const addMissedUpdatesRoleHandler = async (env: env) => {
 	const MAX_ROLE_UPDATE = 25;
 	try {
 		let cursor: string | undefined = undefined;
@@ -102,96 +96,22 @@ export const addMissedUpdatesRole = async (env: env) => {
 	}
 };
 
-export const syncUsersStatus = async (env: env): Promise<any | null> => {
-	await apiCaller(env, 'users/status/update', 'PATCH');
+export const syncApiHandler = async (env: env) => {
+	const handlers = [
+		fireAndForgetApiCall(env, 'users/status/sync', 'PATCH'),
+		fireAndForgetApiCall(env, 'external-accounts/users?action=discord-users-sync', 'POST'),
+		fireAndForgetApiCall(env, 'users', 'POST'),
+		fireAndForgetApiCall(env, 'discord-actions/nicknames/sync?dev=true', 'POST'),
+		fireAndForgetApiCall(env, 'discord-actions/group-idle-7d', 'PUT'),
+		fireAndForgetApiCall(env, 'discord-actions/group-onboarding-31d-plus', 'PUT'),
+	];
 
 	try {
-		const idleUsersData = (await apiCaller(env, 'users/status?aggregate=true', 'GET')) as UserStatusResponse | undefined;
-
-		if (!idleUsersData?.data?.users || idleUsersData.data.users.length === 0) {
-			console.error('Error: Users data is not in the expected format or no users found');
-			return null;
-		}
-
-		const response = await apiCaller(env, 'users/status/batch', 'PATCH', {
-			body: JSON.stringify({ users: idleUsersData.data.users }),
-		});
-
-		return response;
+		await Promise.all(handlers);
+		console.log(
+			`Worker for syncing idle users, nicknames, idle 7d users, and onboarding 31d+ users has completed. Worker for syncing user status, external accounts, and unverified users has completed.`,
+		);
 	} catch (error) {
-		console.error('Error during syncUsersStatus:', error);
-		return null;
+		console.error('Error occurred during Sync API calls:', error);
 	}
 };
-
-export const syncExternalAccounts = async (env: env) => {
-	return await apiCaller(env, 'external-accounts/users?action=discord-users-sync', 'POST');
-};
-
-export const syncUnverifiedUsers = async (env: env) => {
-	return await apiCaller(env, 'users', 'POST');
-};
-
-export const syncIdleUsers = async (env: env) => {
-	return await apiCaller(env, 'discord-actions/group-idle', 'PUT');
-};
-
-export const syncNickNames = async (env: env) => {
-	return await apiCaller(env, 'discord-actions/nicknames/sync?dev=true', 'POST');
-};
-
-export const syncIdle7dUsers = async (env: env) => {
-	return await apiCaller(env, 'discord-actions/group-idle-7d', 'PUT');
-};
-
-export const syncOnboarding31dPlusUsers = async (env: env) => {
-	return await apiCaller(env, 'discord-actions/group-onboarding-31d-plus', 'PUT');
-};
-
-export async function filterOrphanTasks(env: env) {
-	const namespace = env[NAMESPACE_NAME] as unknown as KVNamespace;
-	let lastOrphanTasksFilterationTimestamp: string | null = '0'; // O means it will take the oldest unix timestamp
-	try {
-		lastOrphanTasksFilterationTimestamp = await namespace.get('ORPHAN_TASKS_UPDATED_TIME');
-
-		if (!lastOrphanTasksFilterationTimestamp) {
-			console.log(`Empty KV  ORPHAN_TASKS_UPDATED_TIME: ${lastOrphanTasksFilterationTimestamp}`);
-			lastOrphanTasksFilterationTimestamp = '0'; // O means it will take the oldest unix timestamp
-		}
-	} catch (err) {
-		console.error(err, 'Error while fetching the timestamp of last orphan tasks filteration');
-		throw err;
-	}
-
-	const url = config(env).RDS_BASE_API_URL;
-	let token;
-	try {
-		token = await generateJwt(env);
-	} catch (err) {
-		console.error(`Error while generating JWT token: ${err}`);
-		throw err;
-	}
-	const response = await fetch(`${url}/tasks/orphanTasks`, {
-		method: 'POST',
-		headers: {
-			Authorization: `Bearer ${token}`,
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({
-			lastOrphanTasksFilterationTimestamp,
-		}),
-	});
-	if (!response.ok) {
-		throw new Error('Error while trying to update status of orphan tasks to backlog');
-	}
-
-	const data: OrphanTasksStatusUpdateResponseType = await response.json();
-
-	try {
-		await namespace.put('ORPHAN_TASKS_UPDATED_TIME', Date.now().toString());
-	} catch (err) {
-		console.error('Error while trying to update the last orphan tasks filteration timestamp');
-	}
-
-	return data;
-}
