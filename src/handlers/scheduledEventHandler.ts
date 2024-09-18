@@ -102,7 +102,7 @@ export const syncApiHandler = async (env: env) => {
 		fireAndForgetApiCall(env, 'external-accounts/users?action=discord-users-sync', 'POST'),
 		fireAndForgetApiCall(env, 'users', 'POST'),
 		fireAndForgetApiCall(env, 'discord-actions/nicknames/sync?dev=true', 'POST'),
-		fireAndForgetApiCall(env, 'discord-actions/group-idle-7d', 'PUT'),
+		fireAndForgetApiCall(env, 'discord-actions/group-idle-7d?dev=true', 'PUT'),
 		fireAndForgetApiCall(env, 'discord-actions/group-onboarding-31d-plus', 'PUT'),
 	];
 
