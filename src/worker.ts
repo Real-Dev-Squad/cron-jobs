@@ -9,8 +9,7 @@ export default {
 	async scheduled(req: ScheduledController, env: env, ctx: ExecutionContext) {
 		switch (req.cron) {
 			case EVERY_12_HOURS: {
-				await callDiscordNicknameBatchUpdateHandler(env);
-				await addMissedUpdatesRoleHandler(env);
+				await Promise.allSettled([callDiscordNicknameBatchUpdateHandler(env), addMissedUpdatesRoleHandler(env)]);
 				break;
 			}
 
