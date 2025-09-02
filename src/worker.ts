@@ -14,16 +14,12 @@ export default {
 	async scheduled(req: ScheduledController, env: env, ctx: ExecutionContext) {
 		switch (req.cron) {
 			case EVERY_12_HOURS: {
-				await Promise.allSettled([
-					callDiscordNicknameBatchUpdateHandler(env),
-					addMissedUpdatesRoleHandler(env),
-					addProfileServiceBlockedRoleHandler(env),
-				]);
+				await Promise.allSettled([callDiscordNicknameBatchUpdateHandler(env), addMissedUpdatesRoleHandler(env)]);
 				break;
 			}
 
 			case EVERY_30_MINUTES: {
-				await syncApiHandler(env);
+				await Promise.allSettled([syncApiHandler(env), addProfileServiceBlockedRoleHandler(env)]);
 				break;
 			}
 
