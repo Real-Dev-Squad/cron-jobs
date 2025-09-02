@@ -1,4 +1,9 @@
-import { addMissedUpdatesRoleHandler, callDiscordNicknameBatchUpdateHandler, syncApiHandler } from './handlers/scheduledEventHandler';
+import {
+	addMissedUpdatesRoleHandler,
+	addProfileServiceBlockedRoleHandler,
+	callDiscordNicknameBatchUpdateHandler,
+	syncApiHandler,
+} from './handlers/scheduledEventHandler';
 import { env } from './types/global.types';
 
 const EVERY_12_HOURS = '0 */12 * * *';
@@ -9,7 +14,11 @@ export default {
 	async scheduled(req: ScheduledController, env: env, ctx: ExecutionContext) {
 		switch (req.cron) {
 			case EVERY_12_HOURS: {
-				await Promise.allSettled([callDiscordNicknameBatchUpdateHandler(env), addMissedUpdatesRoleHandler(env)]);
+				await Promise.allSettled([
+					callDiscordNicknameBatchUpdateHandler(env),
+					addMissedUpdatesRoleHandler(env),
+					addProfileServiceBlockedRoleHandler(env),
+				]);
 				break;
 			}
 
