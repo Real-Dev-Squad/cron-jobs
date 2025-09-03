@@ -128,6 +128,29 @@ describe('rdsBackendService', () => {
 				'Fetch call to get profile service blocked users failed with status: 400',
 			);
 		});
+		it('should make a successful API call and return the expected data', async () => {
+			jest.spyOn(globalThis as any, 'fetch').mockResolvedValueOnce({
+				ok: true,
+				status: 200,
+				json: jest.fn().mockResolvedValueOnce(profileServiceBlockedUsersResponse),
+			} as unknown as Response);
+			const result = await getProfileServiceBlockedUsers({}, cursor);
+			const url = new URL(`${config({}).RDS_BASE_API_URL}/users`);
+			url.searchParams.append('profileStatus', 'BLOCKED');
+			expect(fetch).toHaveBeenCalledWith(url, {
+				method: 'GET',
+				headers: {
+					Authorization: 'Bearer mocked-jwt-token',
+					'Content-Type': 'application/json',
+				},
+			});
+			expect(result).toEqual({
+				usersToAddRole: ['user1', 'user2'],
+				tasks: 2,
+				missedUpdatesTasks: 0,
+				cursor: undefined,
+			});
+		});
 
 		it('should handle unknown errors', async () => {
 			const consoleSpy = jest.spyOn(console, 'error');
