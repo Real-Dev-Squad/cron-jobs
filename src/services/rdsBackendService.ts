@@ -54,14 +54,7 @@ export const getProfileServiceBlockedUsers = async (env: env, cursor: string | u
 
 		const responseData: ProfileServiceBlockedUsersResponse = await response.json();
 
-		const discordUsersData = {
-			usersToAddRole: responseData.users.filter((user) => user.discordId && user.roles?.in_discord).map((user) => user.discordId!),
-			tasks: responseData.users?.length || 0,
-			missedUpdatesTasks: 0,
-			cursor: undefined,
-		};
-
-		return discordUsersData;
+		return responseData.users.filter((user) => user.discordId && user.roles?.in_discord).map((user) => user.discordId!);
 	} catch (error) {
 		console.error('Error occurred while fetching profile service blocked users', error);
 		throw error;

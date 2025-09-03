@@ -196,22 +196,17 @@ describe('addProfileServiceBlockedRoleHandler', () => {
 		const mockEnv = {
 			CURRENT_ENVIRONMENT: 'default',
 			PROFILE_SERVICE_BLOCKED_ROLE_ID: '1181214205081296897',
-		};
+		} as env;
 
-		const mockUsersResponse = {
-			usersToAddRole: ['user1', 'user2', 'user3'],
-			tasks: 3,
-			missedUpdatesTasks: 0,
-			cursor: undefined,
-		};
+		const discordIds = ['user1', 'user2', 'user3'];
 
-		// Mock the service function
-		jest.spyOn(rdsBackendService, 'getProfileServiceBlockedUsers').mockResolvedValue(mockUsersResponse);
+		// Mock the service function to return string[]
+		jest.spyOn(rdsBackendService, 'getProfileServiceBlockedUsers').mockResolvedValue(discordIds);
 
 		// Mock the Discord service
 		jest.spyOn(discordBotServices, 'updateUserRoles').mockResolvedValue({
 			userid: 'user1',
-			roleid: '1183553844811153459',
+			roleid: '1181214205081296897',
 			success: true,
 		});
 
@@ -229,16 +224,9 @@ describe('addProfileServiceBlockedRoleHandler', () => {
 		const mockEnv = {
 			CURRENT_ENVIRONMENT: 'production',
 			PROFILE_SERVICE_BLOCKED_ROLE_ID: 'test-role-id',
-		};
+		} as env;
 
-		const mockUsersResponse = {
-			usersToAddRole: [],
-			tasks: 0,
-			missedUpdatesTasks: 0,
-			cursor: undefined,
-		};
-
-		jest.spyOn(rdsBackendService, 'getProfileServiceBlockedUsers').mockResolvedValue(mockUsersResponse);
+		jest.spyOn(rdsBackendService, 'getProfileServiceBlockedUsers').mockResolvedValue([]);
 		jest.spyOn(discordBotServices, 'updateUserRoles');
 
 		await addProfileServiceBlockedRoleHandler(mockEnv);
@@ -251,7 +239,7 @@ describe('addProfileServiceBlockedRoleHandler', () => {
 		const mockEnv = {
 			CURRENT_ENVIRONMENT: 'production',
 			PROFILE_SERVICE_BLOCKED_ROLE_ID: 'test-role-id',
-		};
+		} as env;
 
 		jest.spyOn(rdsBackendService, 'getProfileServiceBlockedUsers').mockRejectedValue(new Error('API Error'));
 		const consoleSpy = jest.spyOn(console, 'error');
@@ -265,16 +253,9 @@ describe('addProfileServiceBlockedRoleHandler', () => {
 		const mockEnv = {
 			CURRENT_ENVIRONMENT: 'production',
 			PROFILE_SERVICE_BLOCKED_ROLE_ID: 'test-role-id',
-		};
+		} as env;
 
-		const mockUsersResponse = {
-			usersToAddRole: ['user1'],
-			tasks: 1,
-			missedUpdatesTasks: 0,
-			cursor: undefined,
-		};
-
-		jest.spyOn(rdsBackendService, 'getProfileServiceBlockedUsers').mockResolvedValue(mockUsersResponse);
+		jest.spyOn(rdsBackendService, 'getProfileServiceBlockedUsers').mockResolvedValue(['user1']);
 		jest.spyOn(discordBotServices, 'updateUserRoles').mockRejectedValue(new Error('Discord API Error'));
 		const consoleSpy = jest.spyOn(console, 'error');
 

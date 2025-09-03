@@ -3,7 +3,7 @@ main = "src/worker.ts"
 compatibility_date = "2023-07-17"
 
 kv_namespaces = [
-  { binding = "CronJobsTimestamp", id = "e6b4aed5228b41fcabc1464827446bfb" }
+  { binding = "CronJobsTimestamp", id = "1234" }
 ]
 [env.staging]
 kv_namespaces = [

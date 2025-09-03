@@ -105,8 +105,8 @@ export const addProfileServiceBlockedRoleHandler = async (env: env) => {
 
 			const profileServiceBlockedUsers = await getProfileServiceBlockedUsers(env, cursor);
 
-			if (!!profileServiceBlockedUsers && profileServiceBlockedUsers.usersToAddRole?.length >= 1) {
-				const discordUserIdRoleIdList: DiscordUserRole[] = profileServiceBlockedUsers.usersToAddRole.map((userId) => ({
+			if (!!profileServiceBlockedUsers && profileServiceBlockedUsers.length >= 1) {
+				const discordUserIdRoleIdList: DiscordUserRole[] = profileServiceBlockedUsers.map((userId) => ({
 					userid: userId,
 					roleid: config(env).PROFILE_SERVICE_BLOCKED_ROLE_ID,
 				}));
@@ -120,7 +120,7 @@ export const addProfileServiceBlockedRoleHandler = async (env: env) => {
 					}
 				}
 			}
-			cursor = profileServiceBlockedUsers?.cursor;
+			cursor = undefined;
 		}
 	} catch (err) {
 		console.error('Error while adding profile service blocked roles', err);
