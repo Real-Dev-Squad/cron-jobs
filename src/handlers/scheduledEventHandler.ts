@@ -3,7 +3,7 @@ import { KVNamespace } from '@cloudflare/workers-types';
 import config from '../config/config';
 import { NAMESPACE_NAME } from '../constants';
 import { updateUserRoles } from '../services/discordBotServices';
-import { getMissedUpdatesUsers } from '../services/rdsBackendService';
+import { getMissedUpdatesUsers, getProfileServiceBlockedUsers } from '../services/rdsBackendService';
 import { DiscordUserRole, env, NicknameUpdateResponseType } from '../types/global.types';
 import { fireAndForgetApiCall } from '../utils/apiCaller';
 import { chunks } from '../utils/arrayUtils';
@@ -96,6 +96,35 @@ export const addMissedUpdatesRoleHandler = async (env: env) => {
 	}
 };
 
+export const addProfileServiceBlockedRoleHandler = async (env: env) => {
+	const MAX_ROLE_UPDATE = 25;
+	try {
+		for (let index = MAX_ROLE_UPDATE; index > 0; index--) {
+			if (index < MAX_ROLE_UPDATE) break;
+
+			const profileServiceBlockedUsers = await getProfileServiceBlockedUsers(env);
+
+			if (!!profileServiceBlockedUsers && profileServiceBlockedUsers.length >= 1) {
+				const discordUserIdRoleIdList: DiscordUserRole[] = profileServiceBlockedUsers.map((userId) => ({
+					userid: userId,
+					roleid: config(env).PROFILE_SERVICE_BLOCKED_ROLE_ID,
+				}));
+
+				const discordUserRoleChunks = chunks(discordUserIdRoleIdList, MAX_ROLE_UPDATE);
+				for (const discordUserRoleList of discordUserRoleChunks) {
+					try {
+						await updateUserRoles(env, discordUserRoleList);
+					} catch (error) {
+						console.error('Error occurred while updating discord users with profile service blocked role', error);
+					}
+				}
+			}
+		}
+	} catch (err) {
+		console.error('Error while adding profile service blocked roles', err);
+	}
+};
+
 export const syncApiHandler = async (env: env) => {
 	const handlers = [
 		fireAndForgetApiCall(env, 'users/status/sync', 'PATCH'),
@@ -104,6 +133,7 @@ export const syncApiHandler = async (env: env) => {
 		fireAndForgetApiCall(env, 'discord-actions/nicknames/sync?dev=true', 'POST'),
 		fireAndForgetApiCall(env, 'discord-actions/group-idle-7d?dev=true', 'PUT'),
 		fireAndForgetApiCall(env, 'discord-actions/group-onboarding-31d-plus', 'PUT'),
+		addProfileServiceBlockedRoleHandler(env),
 	];
 
 	try {

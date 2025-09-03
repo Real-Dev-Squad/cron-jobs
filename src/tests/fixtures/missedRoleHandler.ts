@@ -36,3 +36,18 @@ export const discordRoleUpdateResult = [
 		success: true,
 	},
 ];
+
+export const profileServiceBlockedUsersResponse = {
+	message: 'Users with profile status BLOCKED returned successfully!',
+	count: 2,
+	users: [
+		{
+			discordId: 'user1',
+			roles: { in_discord: true },
+		},
+		{
+			discordId: 'user2',
+			roles: { in_discord: true },
+		},
+	],
+};
