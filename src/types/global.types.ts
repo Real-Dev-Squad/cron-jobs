@@ -9,6 +9,7 @@ export type variables = {
 	RDS_BASE_API_URL: string;
 	DISCORD_BOT_API_URL: string;
 	MISSED_UPDATES_ROLE_ID: string;
+	PROFILE_SERVICE_BLOCKED_ROLE_ID: string;
 };
 
 export type NicknameUpdateResponseType = {
@@ -49,4 +50,16 @@ export type UserStatusResponse = {
 		unprocessedUsers: Array<unknown>;
 		users: Array<unknown>;
 	};
+};
+
+export type ProfileServiceBlockedUsersResponse = {
+	message: string;
+	count: number;
+	users: Array<{
+		discordId?: string;
+		roles?: {
+			in_discord?: boolean;
+		};
+		[key: string]: any;
+	}>;
 };
