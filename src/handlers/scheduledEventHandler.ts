@@ -99,11 +99,10 @@ export const addMissedUpdatesRoleHandler = async (env: env) => {
 export const addProfileServiceBlockedRoleHandler = async (env: env) => {
 	const MAX_ROLE_UPDATE = 25;
 	try {
-		let cursor: string | undefined = undefined;
 		for (let index = MAX_ROLE_UPDATE; index > 0; index--) {
-			if (index < MAX_ROLE_UPDATE && !cursor) break;
+			if (index < MAX_ROLE_UPDATE) break;
 
-			const profileServiceBlockedUsers = await getProfileServiceBlockedUsers(env, cursor);
+			const profileServiceBlockedUsers = await getProfileServiceBlockedUsers(env);
 
 			if (!!profileServiceBlockedUsers && profileServiceBlockedUsers.length >= 1) {
 				const discordUserIdRoleIdList: DiscordUserRole[] = profileServiceBlockedUsers.map((userId) => ({
@@ -120,7 +119,6 @@ export const addProfileServiceBlockedRoleHandler = async (env: env) => {
 					}
 				}
 			}
-			cursor = undefined;
 		}
 	} catch (err) {
 		console.error('Error while adding profile service blocked roles', err);
@@ -135,6 +133,7 @@ export const syncApiHandler = async (env: env) => {
 		fireAndForgetApiCall(env, 'discord-actions/nicknames/sync?dev=true', 'POST'),
 		fireAndForgetApiCall(env, 'discord-actions/group-idle-7d?dev=true', 'PUT'),
 		fireAndForgetApiCall(env, 'discord-actions/group-onboarding-31d-plus', 'PUT'),
+		addProfileServiceBlockedRoleHandler(env),
 	];
 
 	try {

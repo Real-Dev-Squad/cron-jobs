@@ -195,7 +195,7 @@ describe('addProfileServiceBlockedRoleHandler', () => {
 	it('should add profile service blocked role to users successfully', async () => {
 		const mockEnv = {
 			CURRENT_ENVIRONMENT: 'default',
-			PROFILE_SERVICE_BLOCKED_ROLE_ID: '1181214205081296897',
+			PROFILE_SERVICE_BLOCKED_ROLE_ID: '1209237447083303014',
 		} as env;
 
 		const discordIds = ['user1', 'user2', 'user3'];
@@ -206,17 +206,17 @@ describe('addProfileServiceBlockedRoleHandler', () => {
 		// Mock the Discord service
 		jest.spyOn(discordBotServices, 'updateUserRoles').mockResolvedValue({
 			userid: 'user1',
-			roleid: '1181214205081296897',
+			roleid: '1209237447083303014',
 			success: true,
 		});
 
 		await addProfileServiceBlockedRoleHandler(mockEnv);
 
-		expect(rdsBackendService.getProfileServiceBlockedUsers).toHaveBeenCalledWith(mockEnv, undefined);
+		expect(rdsBackendService.getProfileServiceBlockedUsers).toHaveBeenCalledWith(mockEnv);
 		expect(discordBotServices.updateUserRoles).toHaveBeenCalledWith(mockEnv, [
-			{ userid: 'user1', roleid: '1181214205081296897' },
-			{ userid: 'user2', roleid: '1181214205081296897' },
-			{ userid: 'user3', roleid: '1181214205081296897' },
+			{ userid: 'user1', roleid: '1209237447083303014' },
+			{ userid: 'user2', roleid: '1209237447083303014' },
+			{ userid: 'user3', roleid: '1209237447083303014' },
 		]);
 	});
 
@@ -231,7 +231,7 @@ describe('addProfileServiceBlockedRoleHandler', () => {
 
 		await addProfileServiceBlockedRoleHandler(mockEnv);
 
-		expect(rdsBackendService.getProfileServiceBlockedUsers).toHaveBeenCalledWith(mockEnv, undefined);
+		expect(rdsBackendService.getProfileServiceBlockedUsers).toHaveBeenCalledWith(mockEnv);
 		expect(discordBotServices.updateUserRoles).not.toHaveBeenCalled();
 	});
 

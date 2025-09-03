@@ -67,7 +67,6 @@ describe('rdsBackendService', () => {
 	});
 
 	describe('getProfileServiceBlockedUsers', () => {
-		let cursor: undefined | string;
 		beforeEach(() => {
 			jest.clearAllMocks();
 		});
@@ -78,7 +77,7 @@ describe('rdsBackendService', () => {
 				status: 200,
 				json: jest.fn().mockResolvedValueOnce(profileServiceBlockedUsersResponse),
 			} as unknown as Response);
-			const result = await getProfileServiceBlockedUsers({}, cursor);
+			const result = await getProfileServiceBlockedUsers({} as any);
 			const url = new URL(`${config({}).RDS_BASE_API_URL}/users`);
 			url.searchParams.append('profileStatus', 'BLOCKED');
 			expect(fetch).toHaveBeenCalledWith(url, {
@@ -90,31 +89,13 @@ describe('rdsBackendService', () => {
 			});
 			expect(result).toEqual(['user1', 'user2']);
 		});
-		it('should make a successful API call with cursor', async () => {
-			jest.spyOn(globalThis as any, 'fetch').mockResolvedValueOnce({
-				ok: true,
-				status: 200,
-				json: jest.fn().mockResolvedValueOnce(profileServiceBlockedUsersResponse),
-			} as unknown as Response);
-			const result = await getProfileServiceBlockedUsers({}, 'cursorValue');
-			const url = new URL(`${config({}).RDS_BASE_API_URL}/users`);
-			url.searchParams.append('profileStatus', 'BLOCKED');
-			url.searchParams.append('cursor', 'cursorValue');
-			expect(fetch).toHaveBeenCalledWith(url, {
-				method: 'GET',
-				headers: {
-					Authorization: 'Bearer mocked-jwt-token',
-					'Content-Type': 'application/json',
-				},
-			});
-			expect(result).toEqual(['user1', 'user2']);
-		});
+
 		it('should throw error when api call fails', async () => {
 			jest.spyOn(globalThis as any, 'fetch').mockResolvedValueOnce({
 				ok: false,
 				status: 400,
 			} as unknown as Response);
-			await expect(getProfileServiceBlockedUsers({}, cursor)).rejects.toThrow(
+			await expect(getProfileServiceBlockedUsers({} as any)).rejects.toThrow(
 				'Fetch call to get profile service blocked users failed with status: 400',
 			);
 		});
@@ -122,7 +103,7 @@ describe('rdsBackendService', () => {
 		it('should handle unknown errors', async () => {
 			const consoleSpy = jest.spyOn(console, 'error');
 			jest.spyOn(globalThis as any, 'fetch').mockRejectedValueOnce(new Error('Error occurred'));
-			await expect(getProfileServiceBlockedUsers({}, cursor)).rejects.toThrow('Error occurred');
+			await expect(getProfileServiceBlockedUsers({} as any)).rejects.toThrow('Error occurred');
 			expect(consoleSpy).toHaveBeenCalledWith('Error occurred while fetching profile service blocked users', expect.any(Error));
 		});
 	});

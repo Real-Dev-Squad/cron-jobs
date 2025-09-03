@@ -1,9 +1,4 @@
-import {
-	addMissedUpdatesRoleHandler,
-	addProfileServiceBlockedRoleHandler,
-	callDiscordNicknameBatchUpdateHandler,
-	syncApiHandler,
-} from './handlers/scheduledEventHandler';
+import { addMissedUpdatesRoleHandler, callDiscordNicknameBatchUpdateHandler, syncApiHandler } from './handlers/scheduledEventHandler';
 import { env } from './types/global.types';
 
 const EVERY_12_HOURS = '0 */12 * * *';
@@ -19,7 +14,7 @@ export default {
 			}
 
 			case EVERY_30_MINUTES: {
-				await Promise.allSettled([syncApiHandler(env), addProfileServiceBlockedRoleHandler(env)]);
+				await syncApiHandler(env);
 				break;
 			}
 

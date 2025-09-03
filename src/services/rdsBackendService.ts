@@ -31,15 +31,12 @@ export const getMissedUpdatesUsers = async (env: env, cursor: string | undefined
 	}
 };
 
-export const getProfileServiceBlockedUsers = async (env: env, cursor: string | undefined) => {
+export const getProfileServiceBlockedUsers = async (env: env) => {
 	try {
 		const baseUrl = config(env).RDS_BASE_API_URL;
 
 		const url = new URL(`${baseUrl}/users`);
 		url.searchParams.append('profileStatus', 'BLOCKED');
-		if (cursor) {
-			url.searchParams.append('cursor', cursor);
-		}
 		const token = await generateJwt(env);
 		const response = await fetch(url, {
 			method: 'GET',
